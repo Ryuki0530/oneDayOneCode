@@ -13,7 +13,9 @@
 
 - **OS**: Windows 11
 - **エディタ**: Visual Studio Code
-- **C言語**: WSL (Windows Subsystem for Linux) 上で実行
+- **C言語**:WSL バージョン: 2.1.5.0 + gccバージョン： (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+- **Python**: Pythonインタプリタバージョン: 3.12.6
+- **Java**:javac(コンパイラ) 1.8.0_361 + java(ランタイム) version "1.8.0_361"
 
 ## 内容
 
