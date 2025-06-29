@@ -1,0 +1,4 @@
+Warning lines:
+2025-06-29 12:01:06 - Disk space low
+
+Total warnings found: 1
