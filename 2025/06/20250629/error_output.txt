@@ -1,0 +1,5 @@
+Error lines:
+2025-06-29 12:01:05 - Failed to connect to database
+2025-06-29 12:01:07 - Timeout while reading configuration
+
+Total errors found: 2
