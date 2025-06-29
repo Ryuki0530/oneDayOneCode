@@ -1,0 +1,4 @@
+Alphabets: 17
+Digits: 3
+Spaces: 2
+Others: 6

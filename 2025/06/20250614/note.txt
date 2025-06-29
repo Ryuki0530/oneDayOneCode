@@ -1,0 +1,6 @@
+良かった点
+定数symmetricChars
+判断点をふたつのブール変数isSymmetricCharsとisSymmetricStringで、管理していてフローが明確。
+
+反省点
+isSymmetricCharsがfalseで確定した場合、それ以降の処理が無駄になるので即終了処理に移行すべき。
