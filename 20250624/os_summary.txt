@@ -1,7 +1,0 @@
-Android: 35
-ChromeOS: 23
-FreeBSD: 36
-iOS: 29
-Linux: 31
-macOS: 28
-Windows: 18

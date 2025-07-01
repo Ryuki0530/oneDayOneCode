@@ -1,5 +1,0 @@
-反省点
-#define INPUT_STR_LEN 1000
-
-入力時に最後のnull文字が入ることを想定して、
-#define INPUT_STR_LEN 1001のように一文字多く取ること。
