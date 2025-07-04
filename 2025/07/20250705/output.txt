@@ -1,0 +1,3 @@
+apple: 2
+banana: 4
+grape: 2
