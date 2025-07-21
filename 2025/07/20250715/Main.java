@@ -75,20 +75,20 @@ public class Main {
         // Debug
         // csvManager.dump();
         
-        System.out.print("ƒ†[ƒU[ID‚ğ“ü—Í :");
+        System.out.print("ï¿½ï¿½ï¿½[ï¿½Uï¿½[IDï¿½ï¿½ï¿½ï¿½ï¿½ :");
         String userId = sc.nextLine();
 
-        System.out.println("y" + userId + "‚ÌØo—š—ğz");
+        System.out.println("ï¿½y" + userId + "ï¿½ÌØoï¿½ï¿½ï¿½ï¿½ï¿½z");
         List<String[]> userRecords = csvManager.getDataByUid(userId);
         for (String[] record : userRecords) {
             System.out.println(record[1]   + " (" + record[2] + ")");
         }
 
-        // “ú•Ê‘İo”‚ğ•\¦
-        System.out.println("y“ú•Ê‘İo”z");
+        // ï¿½ï¿½ï¿½Ê‘İoï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½
+        System.out.println("ï¿½yï¿½ï¿½ï¿½Ê‘İoï¿½ï¿½ï¿½z");
         Map<LocalDate, Integer> dailyLending = csvManager.DailyLendingQuantity();
         for (Map.Entry<LocalDate, Integer> entry : dailyLending.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue() + "û");
+            System.out.println(entry.getKey() + ": " + entry.getValue() + "ï¿½ï¿½");
         }
     }
 }
