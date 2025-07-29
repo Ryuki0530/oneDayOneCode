@@ -1,6 +1,9 @@
+# main.py
+
 import sys
 import os
 from web_connector import web_connector
+from html_analizer import html_analizer
 
 class main:
     def __init__(self):
@@ -16,6 +19,8 @@ class main:
                 print("Debug mode is ENABLED")
 
         self.connector = web_connector(self.url, self.debug)
+        self.analizer = html_analizer("", self.debug)
+
 
     def main(self):
         if self.url:
@@ -27,6 +32,19 @@ class main:
             if response:
                 print(f"Response status code: {response.status_code}")
                 
+                self.analizer.set_html(response.text)
+                tag_counts = self.analizer.tag_count()
+                tag_hierarchy = self.analizer.tag_hierarchy()
+
+                print("\n\n[Tag counts]")
+                for tag, count in tag_counts.items():
+                    print(f"{tag}: {count}")
+
+                print("\n\n[Tag hierarchy]")
+                prev_level = 0
+                for level, tag_name in tag_hierarchy:
+                    print(f"{'  ' * level}{tag_name}")
+
         else:
             print("No URL provided.")
             return 1

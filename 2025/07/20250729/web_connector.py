@@ -1,3 +1,5 @@
+# web_connector.py
+
 import requests
 
 class web_connector:
@@ -14,7 +16,10 @@ class web_connector:
                 self.response = requests.get(self.url)
                 self.response.raise_for_status()
             except requests.RequestException as e:
-                print(f"Error connecting to {self.url}: {e}")
+                if self.debug:
+                    print(f"Error connecting to {self.url}: {e}")
+                else:
+                    print("Error connecting to the URL.")
                 return 1
         else:
             print("No URL provided for connection.")
