@@ -32,26 +32,6 @@ orange: 1
 - `collections.Counter` を使うと便利です。
 - `sorted()` の `key` 引数でカスタムソートが可能です。
 
-## 💻 動作確認用コード（テンプレート）
-
-```python
-from collections import Counter
-
-def main():
-    text = input().strip()
-    words = text.split()
-    counter = Counter(words)
-
-    # 出現回数の降順、単語の昇順でソート
-    sorted_items = sorted(counter.items(), key=lambda x: (-x[1], x[0]))
-
-    for word, count in sorted_items:
-        print(f"{word}: {count}")
-
-if __name__ == "__main__":
-    main()
-```
-
 # 実行例（VSCodeターミナルなどで）
 ```bash
 $ python main.py
