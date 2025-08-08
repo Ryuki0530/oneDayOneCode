@@ -1,9 +1,9 @@
 import java.util.Scanner;
 import java.util.Map;
 
-class stringEvaluator{
+class StringEvaluator{
     private String inputString;
-    public stringEvaluator(String string) {
+    public StringEvaluator(String string) {
         inputString = string;
     }
 
@@ -30,6 +30,13 @@ public class Main {
         System.out.println("Please enter a Lines of text (type 'exit' to quit):");
         String input;
         input = sc.nextLine();
-        System.out.println("Exiting program.");
+
+        StringEvaluator eval = new StringEvaluator(input);
+        Map<Character, Integer> countMap= eval.countWords();
+        
+        for (char ch = 'a'; ch <= 'z'; ch++) {
+            System.out.println(ch + ": " + countMap.get(ch));
+        }
+        sc.close();
     }
 }
