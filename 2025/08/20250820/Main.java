@@ -51,13 +51,12 @@ public class Main {
 }
 
 class SoundPlayer {
-
-    private String filePath;
-    private volatile boolean paused = false;
-    private volatile boolean stopped = false;
-    private Thread playThread;
     private Clip clip;
+    private long pausePosition = 0;
+    private boolean paused = false;
+    private boolean stopped = false;
     private boolean debug;
+    private String filePath;
 
     SoundPlayer(String filePath, boolean debug) {
         this.filePath = filePath;
@@ -67,76 +66,68 @@ class SoundPlayer {
         }
     }
 
+    // 再生開始
     public boolean SoundStart() {
         if (filePath == null) {
             if (debug) System.out.println("No file selected.");
             return false;
         }
-        if (playThread != null && playThread.isAlive()) {
-            if (debug) System.out.println("Already playing.");
+        try {
+            if (clip != null && clip.isOpen()) {
+                clip.close();
+            }
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(filePath));
+            clip = AudioSystem.getClip();
+            clip.open(ais);
+
+            clip.addLineListener(event -> {
+                if (event.getType() == LineEvent.Type.STOP && !paused && !stopped) {
+                    if (debug) System.out.println("Playback finished.");
+                }
+            });
+
+            pausePosition = 0;
+            stopped = false;
+            paused = false;
+            clip.setMicrosecondPosition(0);
+            clip.start();
+            if (debug) System.out.println("Playback started.");
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-        stopped = false;
-        paused = false;
-        playThread = new Thread(() -> {
-            try {
-                AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(new File(filePath));
-                clip = AudioSystem.getClip();
-                clip.open(audioInputStream);
-                clip.start();
-                if (debug) System.out.println("Playback started.");
-                while (!stopped && clip.isActive()) {
-                    if (paused) {
-                        clip.stop();
-                        if (debug) System.out.println("Playback paused.");
-                        while (paused && !stopped) {
-                            Thread.sleep(100);
-                        }
-                        if (!stopped) {
-                            clip.start();
-                            if (debug) System.out.println("Playback resumed.");
-                        }
-                    }
-                    Thread.sleep(100);
-                }
-                clip.stop();
-                clip.close();
-                audioInputStream.close();
-                if (debug) System.out.println("Playback stopped.");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-        playThread.start();
-        return true;
     }
 
+    // 一時停止
     public void pause() {
         if (clip != null && clip.isRunning()) {
+            pausePosition = clip.getMicrosecondPosition();
+            clip.stop();
             paused = true;
+            if (debug) System.out.println("Paused at " + pausePosition + " µs");
         }
     }
 
+    // 再開
     public void resume() {
         if (clip != null && paused) {
+            clip.setMicrosecondPosition(pausePosition);
+            clip.start();
             paused = false;
+            if (debug) System.out.println("Resumed from " + pausePosition + " µs");
         }
     }
 
+    // 停止
     public void stop() {
-        stopped = true;
-        paused = false;
         if (clip != null) {
+            stopped = true;
             clip.stop();
-            clip.close();
+            clip.setMicrosecondPosition(0);
+            pausePosition = 0;
+            paused = false;
+            if (debug) System.out.println("Playback stopped.");
         }
-        if (playThread != null && playThread.isAlive()) {
-            try {
-                playThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-        if (debug) System.out.println("Playback thread stopped.");
     }
 }
