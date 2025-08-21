@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<string.h>
 #include<stdbool.h>
+#define MAX 1024
 
 bool is_uppercase(char c) {
     return c >= 'A' && c <= 'Z';
@@ -31,8 +32,9 @@ char *str_toggle_case(char *str) {
 }
 
 int main() {
-    char str[100];
+    char str[MAX];
     fgets(str, sizeof(str), stdin);
+    str[strcspn(str, "\n")] = '\0';
     str_toggle_case(str);
     printf("%s", str);
     return 0;
