@@ -1,0 +1,28 @@
+plugins {
+    id 'application'
+}
+repositories { mavenCentral() }
+
+ext.lwjglVersion = '3.3.4'
+def lwjgl = { String name -> "org.lwjgl:lwjgl${name ? "-$name" : ""}:${lwjglVersion}" }
+def lwjglNatives = { String name -> "org.lwjgl:lwjgl${name ? "-$name" : ""}:${lwjglVersion}:natives-windows" }
+
+dependencies {
+    implementation lwjgl('')
+    implementation lwjgl('opengl')
+    implementation lwjgl('glfw')
+
+    runtimeOnly lwjglNatives('')
+    runtimeOnly lwjglNatives('opengl')
+    runtimeOnly lwjglNatives('glfw')
+}
+
+application {
+    mainClass = 'od1c.Main'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    sourceCompatibility = '17'
+    targetCompatibility = '17'
+}
