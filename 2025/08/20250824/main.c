@@ -139,7 +139,7 @@ int WINAPI wWinMain(HINSTANCE hInst, HINSTANCE hPrev, PWSTR pCmdLine, int nCmdSh
 
     HWND hWnd = CreateWindowExW(
         WS_EX_APPWINDOW,
-        kClassName, L"Win32 API: ファイル選択デモ",
+        kClassName, L"WAV Player",
         WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 560, 140,
         NULL, NULL, hInst, NULL);
