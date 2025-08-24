@@ -6,19 +6,18 @@
 #include "wav_player.h"
 
 // コントロールID
-enum { ID_EDIT = 1001, ID_BTN_PLAY = 1002, ID_BTN_BROWSE = 1003 };
+enum { ID_EDIT = 1001, ID_BTN_PLAY = 1002, ID_BTN_BROWSE = 1003, ID_BTN_STOP = 1004 };
 
 static HWND g_hEdit = NULL;
 static HWND g_hBtnPlay = NULL;
 static HWND g_hBtnBrowse = NULL;
+static HWND g_hBtnStop = NULL;
 
 static BOOL OpenFileDialog(HWND owner, wchar_t *outPath, DWORD outCount) {
     // フィルタは「説明\0パターン\0…\0\0」の二重終端
     // 例：すべてのファイル / テキスト / 画像
     static const wchar_t FILTER[] =
-        L"すべてのファイル (*.*)\0*.*\0"
-        L"テキスト (*.txt)\0*.txt\0"
-        L"画像 (*.png;*.jpg;*.jpeg)\0*.png;*.jpg;*.jpeg\0\0";
+        L"オーディオファイル (*.wav)\0*.wav\0";
 
     OPENFILENAMEW ofn = {0};
     ofn.lStructSize = sizeof(ofn);
@@ -55,6 +54,12 @@ static void CreateUI(HWND hWnd) {
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
         10, 50, 80, 30,
         hWnd, (HMENU)(INT_PTR)ID_BTN_PLAY, GetModuleHandleW(NULL), NULL);
+    
+    g_hBtnStop = CreateWindowExW(
+        0, L"BUTTON", L"Stop",
+        WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
+        100, 50, 80, 30,
+        hWnd, (HMENU)(INT_PTR)ID_BTN_STOP, GetModuleHandleW(NULL), NULL);
 }
 
 static void Layout(HWND hWnd) {
@@ -69,6 +74,7 @@ static void Layout(HWND hWnd) {
     SetWindowPos(g_hEdit, NULL, pad, pad, editW, h, SWP_NOZORDER);
     SetWindowPos(g_hBtnBrowse, NULL, pad*2 + editW, pad, browseW, h, SWP_NOZORDER);
     SetWindowPos(g_hBtnPlay, NULL, pad, pad + h + 10, 100, 30, SWP_NOZORDER);
+    SetWindowPos(g_hBtnStop, NULL, pad + 110, pad + h + 10, 100, 30, SWP_NOZORDER);
 }
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -84,7 +90,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
     case WM_COMMAND: {
         switch (LOWORD(wParam)) {
         case ID_BTN_BROWSE: {
-            wchar_t path[MAX_PATH * 8]; // 長めに確保（ロングパス回避のため多め）
+            wchar_t path[MAX_PATH * 8];
             if (OpenFileDialog(hWnd, path, (DWORD)(sizeof(path)/sizeof(path[0])))) {
                 SetWindowTextW(g_hEdit, path);
             }
@@ -102,9 +108,13 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
             }
             return 0;
         }
+        case ID_BTN_STOP: {
+            wav_play_stop();
+            return 0;
         }
-        break;
-    }
+        }
+        break; // ← ここでswitch(LOWORD(wParam))を抜ける
+    } // ← これが必要！WM_COMMANDのcaseブロックを閉じる
 
     case WM_DESTROY:
         PostQuitMessage(0);
