@@ -3,13 +3,13 @@
 #include <commctrl.h>
 #include <commdlg.h>  // GetOpenFileNameW
 
-#pragma comment(lib, "comctl32.lib") // ←MinGWでは無視されるので残してもOK、気になるなら削除
+#include "wav_player.h"
 
 // コントロールID
-enum { ID_EDIT = 1001, ID_BTN_SHOW = 1002, ID_BTN_BROWSE = 1003 };
+enum { ID_EDIT = 1001, ID_BTN_PLAY = 1002, ID_BTN_BROWSE = 1003 };
 
 static HWND g_hEdit = NULL;
-static HWND g_hBtnShow = NULL;
+static HWND g_hBtnPlay = NULL;
 static HWND g_hBtnBrowse = NULL;
 
 static BOOL OpenFileDialog(HWND owner, wchar_t *outPath, DWORD outCount) {
@@ -50,11 +50,11 @@ static void CreateUI(HWND hWnd) {
         400, 10, 90, 28,
         hWnd, (HMENU)(INT_PTR)ID_BTN_BROWSE, GetModuleHandleW(NULL), NULL);
 
-    g_hBtnShow = CreateWindowExW(
-        0, L"BUTTON", L"Show",
+    g_hBtnPlay = CreateWindowExW(
+        0, L"BUTTON", L"Play",
         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
         10, 50, 80, 30,
-        hWnd, (HMENU)(INT_PTR)ID_BTN_SHOW, GetModuleHandleW(NULL), NULL);
+        hWnd, (HMENU)(INT_PTR)ID_BTN_PLAY, GetModuleHandleW(NULL), NULL);
 }
 
 static void Layout(HWND hWnd) {
@@ -68,7 +68,7 @@ static void Layout(HWND hWnd) {
 
     SetWindowPos(g_hEdit, NULL, pad, pad, editW, h, SWP_NOZORDER);
     SetWindowPos(g_hBtnBrowse, NULL, pad*2 + editW, pad, browseW, h, SWP_NOZORDER);
-    SetWindowPos(g_hBtnShow, NULL, pad, pad + h + 10, 100, 30, SWP_NOZORDER);
+    SetWindowPos(g_hBtnPlay, NULL, pad, pad + h + 10, 100, 30, SWP_NOZORDER);
 }
 
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -90,10 +90,16 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
             }
             return 0;
         }
-        case ID_BTN_SHOW: {
+        case ID_BTN_PLAY: {
             wchar_t buf[1024];
             GetWindowTextW(g_hEdit, buf, 1024);
-            MessageBoxW(hWnd, buf[0] ? buf : L"(空です)", L"選択されたパス", MB_OK | MB_ICONINFORMATION);
+            if (buf[0]) {
+                char mbbuf[1024];
+                WideCharToMultiByte(CP_ACP, 0, buf, -1, mbbuf, sizeof(mbbuf), NULL, NULL);
+                wav_play_start(mbbuf);
+            } else {
+                MessageBoxW(hWnd, L"(空です)", L"選択されたパス", MB_OK | MB_ICONINFORMATION);
+            }
             return 0;
         }
         }
