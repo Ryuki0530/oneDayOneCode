@@ -16,24 +16,19 @@
 
 ## 実行例
 ### 入力
+```
 This is a pen and this is an apple and a pen
-
-shell
-コピーする
-編集する
-
+```
 ### 出力
-a 3
+```
+a 2
 and 2
 is 2
 pen 2
 this 2
 an 1
 apple 1
-
-markdown
-コピーする
-編集する
+```
 
 ## 制約
 - 1行の入力の長さは 1000 文字以内とする。
