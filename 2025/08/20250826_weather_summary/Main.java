@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.WatchService;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.Map;
@@ -148,6 +149,98 @@ class ApiNegotiator {
     }
 
 }
+
+class Output {
+    private String outputDestination;
+    private String format;
+    private boolean firstJson = true; // JSON配列のカンマ制御用
+
+    public Output(String path, String format) {
+        this.outputDestination = path;
+        this.format = format;
+        if (format == null || format.isEmpty()) {
+            throw new IllegalArgumentException("出力フォーマットが指定されていません。");
+        }
+        if (!format.equals("table") && !format.equals("csv") && !format.equals("json")) {
+            throw new IllegalArgumentException("出力フォーマットは 'table', 'csv', または 'json' のいずれかでなければなりません。");
+        }
+        if (format.equals("json")) {
+            outString("[\n");
+        }
+    }
+
+    private void outString(String str) {
+        try {
+            if (outputDestination == null) {
+                System.out.print(str);
+            } else {
+                java.nio.file.Files.write(
+                    java.nio.file.Paths.get(outputDestination),
+                    str.getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                    java.nio.file.StandardOpenOption.CREATE,
+                    java.nio.file.StandardOpenOption.APPEND
+                );
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("出力エラー: " + e.getMessage(), e);
+        }
+    }
+
+    public void outputHeader(String city, String country, double lat, double lon, String tz, int days) {
+        if (format.equals("table")) {
+            outString("+------------+--------+--------+------------+----------+-------+\n");
+            outString("| date       | t_min  | t_max  | precip_sum | wind_max | hours |\n");
+            outString("+------------+--------+--------+------------+----------+-------+\n");
+        } else if (format.equals("csv")) {
+            outString("date,t_min,t_max,precip_sum,wind_max,hours\n");
+        }
+        // jsonは配列開始済み
+    }
+
+    public void output_one_record(WeatherDay wd) {
+        if (format.equals("table")) {
+            outString(String.format(
+                "| %-10s | %6s | %6s | %10s | %8s | %5s |\n",
+                wd.date,
+                wd.t_min != null ? String.format("%.1f", wd.t_min) : "  --  ",
+                wd.t_max != null ? String.format("%.1f", wd.t_max) : "  --  ",
+                wd.precip_sum != null ? String.format("%.1f", wd.precip_sum) : "   --    ",
+                wd.wind_max != null ? String.format("%.1f", wd.wind_max) : "  --   ",
+                wd.hours > 0 ? String.valueOf(wd.hours) : " --  "
+            ));
+        } else if (format.equals("csv")) {
+            outString(String.format(
+                "%s,%s,%s,%s,%s,%d\n",
+                wd.date,
+                wd.t_min != null ? String.format("%.1f", wd.t_min) : "",
+                wd.t_max != null ? String.format("%.1f", wd.t_max) : "",
+                wd.precip_sum != null ? String.format("%.1f", wd.precip_sum) : "",
+                wd.wind_max != null ? String.format("%.1f", wd.wind_max) : "",
+                wd.hours
+            ));
+        } else if (format.equals("json")) {
+            if (!firstJson) outString(",\n");
+            outString(String.format(
+                "  {\"date\":\"%s\",\"t_min\":%s,\"t_max\":%s,\"precip_sum\":%s,\"wind_max\":%s,\"hours\":%d}",
+                wd.date,
+                wd.t_min != null ? String.format("%.1f", wd.t_min) : "null",
+                wd.t_max != null ? String.format("%.1f", wd.t_max) : "null",
+                wd.precip_sum != null ? String.format("%.1f", wd.precip_sum) : "null",
+                wd.wind_max != null ? String.format("%.1f", wd.wind_max) : "null",
+                wd.hours
+            ));
+            firstJson = false;
+        }
+    }
+
+    public void outputFooter() {
+        if (format.equals("table")) {
+            outString("+------------+--------+--------+------------+----------+-------+\n");
+        } else if (format.equals("json")) {
+            outString("\n]\n");
+        }
+    }
+}
 public class Main {
 
     private String city = null;
@@ -171,27 +264,27 @@ public class Main {
         ApiNegotiator api = new ApiNegotiator(main.city, main.days, main.format, main.out, main.debug);
         try {
             double[] coords = api.getCoordinates();
-            System.out.println("Latitude: " + coords[0] + ", Longitude: " + coords[1]);
             Map<String, WeatherDay> weatherMap = api.getWeatherMap(coords[0], coords[1], main.days);
-            for (String date : weatherMap.keySet()) {
+
+            // 都市名・国名・タイムゾーン取得（APIレスポンスから抽出する場合は追加実装が必要）
+            String cityName = main.city != null ? main.city : "";
+            String country = ""; // 必要ならgetCoordinatesで国名も抽出
+            String tz = "Asia/Tokyo"; // 必要ならAPIから抽出
+            Output output = new Output(main.out, main.format);
+            output.outputHeader(cityName, country, coords[0], coords[1], tz, main.days);
+
+            // 日付順に出力
+            List<String> dates = new ArrayList<>(weatherMap.keySet());
+            dates.sort(String::compareTo);
+            for (String date : dates) {
                 WeatherDay wd = weatherMap.get(date);
-                System.out.printf(
-                    "%s: t_min=%.1f, t_max=%.1f, precip_sum=%.1f, wind_max=%.1f, hours=%d%n",
-                    wd.date,
-                    wd.t_min != null ? wd.t_min : Double.NaN,
-                    wd.t_max != null ? wd.t_max : Double.NaN,
-                    wd.precip_sum != null ? wd.precip_sum : Double.NaN,
-                    wd.wind_max != null ? wd.wind_max : Double.NaN,
-                    wd.hours
-                );
+                output.output_one_record(wd);
             }
+            output.outputFooter();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
-    
     private void argsParser(String[] args) {
         
         String city = null;
