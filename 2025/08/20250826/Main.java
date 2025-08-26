@@ -4,6 +4,28 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+
+class WeatherDay {
+    public String date;
+    public Double t_min;
+    public Double t_max;
+    public Double precip_sum;
+    public Double wind_max;
+    public int hours;
+
+    public WeatherDay(String date) {
+        this.date = date;
+        this.t_min = null;
+        this.t_max = null;
+        this.precip_sum = null;
+        this.wind_max = null;
+        this.hours = 0;
+    }
+}
 
 class ApiNegotiator {
     protected String city;
@@ -58,8 +80,8 @@ class ApiNegotiator {
         }
     }
 
-    // 座標から天気情報を取得（標準ライブラリのみ）
-    public String getWeather(double latitude, double longitude, int days) throws Exception {
+    // 座標から天気情報を取得し、日付ごとのマップで返す
+    public Map<String, WeatherDay> getWeatherMap(double latitude, double longitude, int days) throws Exception {
         String urlStr = "https://api.open-meteo.com/v1/forecast?latitude=" + latitude
                 + "&longitude=" + longitude
                 + "&hourly=temperature_2m,precipitation,wind_speed_10m"
@@ -81,8 +103,7 @@ class ApiNegotiator {
         in.close();
         conn.disconnect();
 
-        // 必要な情報だけ抜き出す例（最初の3時間分の気温・降水量・風速を表示）
-        StringBuilder result = new StringBuilder();
+        // 各配列を抽出
         Pattern timePattern = Pattern.compile("\"time\"\\s*:\\s*\\[(.*?)\\]");
         Pattern tempPattern = Pattern.compile("\"temperature_2m\"\\s*:\\s*\\[(.*?)\\]");
         Pattern precPattern = Pattern.compile("\"precipitation\"\\s*:\\s*\\[(.*?)\\]");
@@ -93,27 +114,40 @@ class ApiNegotiator {
         Matcher precMatcher = precPattern.matcher(response);
         Matcher windMatcher = windPattern.matcher(response);
 
-        if (timeMatcher.find() && tempMatcher.find() && precMatcher.find() && windMatcher.find()) {
-            String[] times = timeMatcher.group(1).replaceAll("\"", "").split(",");
-            String[] temps = tempMatcher.group(1).split(",");
-            String[] precs = precMatcher.group(1).split(",");
-            String[] winds = windMatcher.group(1).split(",");
-
-            int count = Math.min(3, Math.min(times.length, Math.min(temps.length, Math.min(precs.length, winds.length))));
-            for (int i = 0; i < count; i++) {
-                result.append("時刻: ").append(times[i].trim())
-                      .append(" / 気温: ").append(temps[i].trim()).append("℃")
-                      .append(" / 降水量: ").append(precs[i].trim()).append("mm")
-                      .append(" / 風速: ").append(winds[i].trim()).append("km/h\n");
-            }
-        } else {
-            result.append("天気データの抽出に失敗しました。\n");
+        if (!(timeMatcher.find() && tempMatcher.find() && precMatcher.find() && windMatcher.find())) {
+            throw new RuntimeException("天気データの抽出に失敗しました。");
         }
-        return result.toString();
+
+        String[] times = timeMatcher.group(1).replaceAll("\"", "").split(",");
+        String[] temps = tempMatcher.group(1).split(",");
+        String[] precs = precMatcher.group(1).split(",");
+        String[] winds = windMatcher.group(1).split(",");
+
+        Map<String, WeatherDay> map = new HashMap<>();
+
+        for (int i = 0; i < times.length; i++) {
+            String datetime = times[i].trim();
+            String date = datetime.split("T")[0];
+
+            double temp = Double.parseDouble(temps[i].trim());
+            double prec = Double.parseDouble(precs[i].trim());
+            double wind = Double.parseDouble(winds[i].trim());
+
+            WeatherDay wd = map.getOrDefault(date, new WeatherDay(date));
+            // t_min, t_max
+            if (wd.t_min == null || temp < wd.t_min) wd.t_min = temp;
+            if (wd.t_max == null || temp > wd.t_max) wd.t_max = temp;
+            // 降水量合計
+            wd.precip_sum = (wd.precip_sum == null ? 0.0 : wd.precip_sum) + prec;
+            // 最大風速
+            if (wd.wind_max == null || wind > wd.wind_max) wd.wind_max = wind;
+            wd.hours++;
+            map.put(date, wd);
+        }
+        return map;
     }
+
 }
-
-
 public class Main {
 
     private String city = null;
@@ -138,11 +172,26 @@ public class Main {
         try {
             double[] coords = api.getCoordinates();
             System.out.println("Latitude: " + coords[0] + ", Longitude: " + coords[1]);
+            Map<String, WeatherDay> weatherMap = api.getWeatherMap(coords[0], coords[1], main.days);
+            for (String date : weatherMap.keySet()) {
+                WeatherDay wd = weatherMap.get(date);
+                System.out.printf(
+                    "%s: t_min=%.1f, t_max=%.1f, precip_sum=%.1f, wind_max=%.1f, hours=%d%n",
+                    wd.date,
+                    wd.t_min != null ? wd.t_min : Double.NaN,
+                    wd.t_max != null ? wd.t_max : Double.NaN,
+                    wd.precip_sum != null ? wd.precip_sum : Double.NaN,
+                    wd.wind_max != null ? wd.wind_max : Double.NaN,
+                    wd.hours
+                );
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+
+    
     private void argsParser(String[] args) {
         
         String city = null;
