@@ -5,9 +5,126 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <errno.h>
+#include <stdarg.h>
+#include <fcntl.h>
 
 #define MAX_INPUT_SIZE 1024
 #define MAX_TOKENS     128
+
+/* ========= 翻訳モード関連 ここから (統合版) =========
+   実際の翻訳ロジックは translation_core() のみを編集してください。
+   translate_text / translate_chunk は共通コアを呼ぶ薄いラッパです。
+*/
+static bool g_translate_mode = false;
+
+/* 共通コア: src (長さlen) を翻訳して新規malloc文字列を返す
+   has_final_nl: 末尾に改行を戻すか
+   kind: 0=行/内部メッセージ, 1=チャンク
+   TODO: ここを書き換えて本当の翻訳を実装
+*/
+static char *translation_core(const char *src, size_t len, bool has_final_nl, int kind) {
+    /* 例: 小文字→大文字 + 共通プレフィックス/サフィックス */
+    const char *pre  = (kind == 0) ? "[TR]" : "[TR]";
+    const char *post = (kind == 0) ? "[/TR]" : "[/TR]";
+    size_t prelen = strlen(pre);
+    size_t postlen = strlen(post);
+
+    /* 変換後バッファ確保 */
+    char *buf = malloc(prelen + len + postlen + (has_final_nl ? 1 : 0) + 1);
+    if (!buf) return NULL;
+
+    memcpy(buf, pre, prelen);
+    for (size_t i = 0; i < len; ++i) {
+        unsigned char c = (unsigned char)src[i];
+        if ('a' <= c && c <= 'z') c = (unsigned char)(c - 'a' + 'A'); /* 簡易置換 */
+        buf[prelen + i] = (char)c;
+    }
+    memcpy(buf + prelen + len, post, postlen);
+    size_t pos = prelen + len + postlen;
+    if (has_final_nl) buf[pos++] = '\n';
+    buf[pos] = '\0';
+    return buf;
+}
+
+/* 行単位/内部メッセージ翻訳 */
+char *translate_text(const char *src) {
+    if (!src) return NULL;
+    if (!g_translate_mode) return strdup(src);
+
+    size_t len = strlen(src);
+    bool has_nl = (len > 0 && src[len-1] == '\n');
+    if (has_nl) len--; /* 改行除いてコア処理 */
+
+    return translation_core(src, len, has_nl, 0);
+}
+
+/* チャンク翻訳: ストリーム断片
+   out_len には返却文字列のバイト長(終端は含めない)を格納
+*/
+char *translate_chunk(const char *src, size_t len, size_t *out_len) {
+    if (out_len) *out_len = 0;
+    if (!src) return NULL;
+
+    if (!g_translate_mode) {
+        char *raw = malloc(len + 1);
+        if (!raw) return NULL;
+        memcpy(raw, src, len);
+        raw[len] = '\0';
+        if (out_len) *out_len = len;
+        return raw;
+    }
+
+    /* チャンクは改行保証しないので has_final_nl=false でコア呼び出し */
+    char *tr = translation_core(src, len, false, 1);
+    if (tr && out_len) *out_len = strlen(tr); /* プレ/ポスト含む */
+    return tr;
+}
+
+/* シェル内部メッセージ出力用ラッパ */
+static void shell_vprintf(const char *fmt, va_list ap) {
+    char tmp[4096];
+    int n = vsnprintf(tmp, sizeof(tmp), fmt, ap);
+    if (n < 0) return;
+
+    if ((size_t)n < sizeof(tmp)) {
+        char *tr = translate_text(tmp);
+        if (tr) {
+            fputs(tr, stdout);
+            free(tr);
+        }
+    } else {
+        size_t need = (size_t)n + 1;
+        char *dyn = malloc(need);
+        if (!dyn) return;
+        vsnprintf(dyn, need, fmt, ap);
+        char *tr = translate_text(dyn);
+        if (tr) {
+            fputs(tr, stdout);
+            free(tr);
+        }
+        free(dyn);
+    }
+}
+
+static void shell_printf(const char *fmt, ...) {
+    va_list ap; va_start(ap, fmt);
+    shell_vprintf(fmt, ap);
+    va_end(ap);
+}
+
+static void shell_eprintf(const char *fmt, ...) {
+    va_list ap; va_start(ap, fmt);
+    char tmp[4096];
+    int n = vsnprintf(tmp, sizeof(tmp), fmt, ap);
+    va_end(ap);
+    if (n < 0) return;
+    char *tr = translate_text(tmp);
+    if (tr) {
+        fputs(tr, stderr);
+        free(tr);
+    }
+}
+/* ========= 翻訳モード関連 統合版 ここまで ========= */
 
 // Prototypes
 int  main_loop(bool *exit_flag);
@@ -18,7 +135,15 @@ char **parse_args(const char *cmd);
 void free_args(char **args);
 int execute_pipeline(char *line);
 
-int main(void) {
+int main(int argc, char *argv[]) {
+    for (int i = 1; i < argc; ++i) {
+        if (strcmp(argv[i], "--t") == 0) {
+            g_translate_mode = true;
+        }
+    }
+    if (g_translate_mode) {
+        fprintf(stdout, "[translation mode ON]\n");
+    }
     bool exit_flag = false;
     main_loop(&exit_flag);
     return 0;
@@ -26,11 +151,11 @@ int main(void) {
 
 int main_loop(bool *exit_flag) {
     char input[MAX_INPUT_SIZE];
-    printf("Enter commands (separated by ';', type 'exit' to quit):\n");
+    shell_printf("Enter commands (separated by ';', type 'exit' to quit):\n");
     while (!(*exit_flag)) {
-        printf("> ");
+        shell_printf("> ");
         if (!fgets(input, sizeof(input), stdin)) {
-            printf("\n");
+            shell_printf("\n");
             break;
         }
         input[strcspn(input, "\n")] = '\0';
@@ -47,7 +172,7 @@ int main_loop(bool *exit_flag) {
             }
             int status = execute_pipeline(cmdline);
             if (status != 0) {
-                fprintf(stderr, "[exit=%d]\n", status);
+                shell_eprintf("[exit=%d]\n", status);
             }
         }
         free_string_array(commands);
@@ -132,21 +257,20 @@ void free_args(char **args) {
     free(args);
 }
 
- // パイプライン実行
+// パイプライン実行 (翻訳モード時は最終出力を捕捉して翻訳)
 int execute_pipeline(char *line) {
     char **stages = split_string(line, '|');
     if (!stages) return -1;
 
-    // ステージ数算出
     size_t count = 0;
     for (; stages[count]; ++count);
-
     if (count == 0) {
         free_string_array(stages);
         return 0;
     }
 
     int prev_read = -1;
+    int capture_fd = -1; // 翻訳用(最終段のstdout)
     pid_t *pids = malloc(sizeof(pid_t) * count);
     if (!pids) {
         free_string_array(stages);
@@ -156,14 +280,15 @@ int execute_pipeline(char *line) {
     for (size_t i = 0; i < count; ++i) {
         char *stage = trim(stages[i]);
         if (*stage == '\0') {
-            fprintf(stderr, "空のパイプセクション\n");
+            shell_eprintf("空のパイプセクション\n");
             free(pids);
             free_string_array(stages);
             return -1;
         }
 
         int pipefd[2] = {-1,-1};
-        if (i < count - 1) {
+        bool need_pipe = (i < count - 1) || (g_translate_mode && i == count - 1);
+        if (need_pipe) {
             if (pipe(pipefd) < 0) {
                 perror("pipe");
                 free(pids);
@@ -185,17 +310,17 @@ int execute_pipeline(char *line) {
             if (prev_read != -1) {
                 if (dup2(prev_read, STDIN_FILENO) < 0) { perror("dup2"); _exit(1); }
             }
-            if (i < count - 1) {
+            if (need_pipe) {
+                // 自分のstdoutをpipeへ
                 close(pipefd[0]);
                 if (dup2(pipefd[1], STDOUT_FILENO) < 0) { perror("dup2"); _exit(1); }
             }
-            // 不要fdクローズ
             if (prev_read != -1) close(prev_read);
-            if (i < count - 1) close(pipefd[1]);
+            if (need_pipe) close(pipefd[1]);
 
             char **args = parse_args(stage);
             if (!args || !args[0]) {
-                fprintf(stderr, "実行不可: %s\n", stage);
+                shell_eprintf("実行不可: %s\n", stage);
                 free_args(args);
                 _exit(127);
             }
@@ -206,14 +331,34 @@ int execute_pipeline(char *line) {
         } else { // parent
             pids[i] = pid;
             if (prev_read != -1) close(prev_read);
-            if (i < count - 1) {
+            if (need_pipe) {
                 close(pipefd[1]);
-                prev_read = pipefd[0];
+                if (g_translate_mode && i == count - 1) {
+                    capture_fd = pipefd[0];
+                } else {
+                    prev_read = pipefd[0];
+                }
             }
         }
     }
 
     if (prev_read != -1) close(prev_read);
+
+    // 最終段出力を翻訳モードで捕捉
+    if (g_translate_mode && capture_fd != -1) {
+        char buf[4096];
+        ssize_t n;
+        while ((n = read(capture_fd, buf, sizeof(buf))) > 0) {
+            size_t out_len = 0;
+            char *tr = translate_chunk(buf, (size_t)n, &out_len);
+            if (tr) {
+                if (out_len > 0) fwrite(tr, 1, out_len, stdout);
+                free(tr);
+            }
+        }
+        close(capture_fd);
+        fflush(stdout);
+    }
 
     int last_status = 0;
     for (size_t i = 0; i < count; ++i) {
@@ -232,4 +377,5 @@ int execute_pipeline(char *line) {
     free(pids);
     free_string_array(stages);
     return last_status;
+
 }
