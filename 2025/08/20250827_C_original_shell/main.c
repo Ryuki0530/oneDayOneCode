@@ -11,6 +11,8 @@
 #define MAX_INPUT_SIZE 1024
 #define MAX_TOKENS     128
 
+static char g_api_key[256] = {0};
+
 /* ========= 翻訳モード関連 ここから (統合版) =========
    実際の翻訳ロジックは translation_core() のみを編集してください。
    translate_text / translate_chunk は共通コアを呼ぶ薄いラッパです。
@@ -139,10 +141,19 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i < argc; ++i) {
         if (strcmp(argv[i], "--t") == 0) {
             g_translate_mode = true;
+            // 次の引数がAPIキーなら保存
+            if (i + 1 < argc && argv[i + 1][0] != '-') {
+                strncpy(g_api_key, argv[i + 1], sizeof(g_api_key) - 1);
+                g_api_key[sizeof(g_api_key) - 1] = '\0';
+                i++; // APIキー分スキップ
+            }
         }
     }
     if (g_translate_mode) {
         fprintf(stdout, "[translation mode ON]\n");
+        if (g_api_key[0]) {
+            fprintf(stdout, "[API key set]\n");
+        }
     }
     bool exit_flag = false;
     main_loop(&exit_flag);
