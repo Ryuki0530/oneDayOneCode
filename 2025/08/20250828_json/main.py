@@ -15,12 +15,12 @@ class Book_Table:
     def __init__(self):
         self.records = []
 
-    def add_record(self, title, author, price, year):
+    def add_record_by_values(self, title, author, price, year):
         record = Book_Record(title, author, price, year)
         self.records.append(record)
         return 0
-    # overload
-    def add_record(self, record: Book_Record):
+    
+    def add_record_by_recordClass(self, record: Book_Record):
         self.records.append(record)
         return 0
 
@@ -77,12 +77,12 @@ class Json_Loader:
             data = self._parse_records_json(raw_data)
         else:
             print("No data to load.")
-            return 0
+            return 1
         
         if data:
             for record in data:
-                self.Book_Table.add_record(*record)
-            return 1
+                self.Book_Table.add_record_by_values(*record)
+            return 0
 
     def _open_file(self):
         try:
@@ -111,17 +111,16 @@ class Json_Loader:
 def main():
     book_table = Book_Table()
     loader = Json_Loader(FILE_PATH, book_table)
-
+    analyzer = Book_Table_Analyzer(book_table)
+    
     if loader.load() == 0:
-        analyzer = Book_Table_Analyzer(book_table)
-
         print("Total Books:", analyzer.total_stack())
         print("Total Price:", analyzer.total_price())
         print("Author ", analyzer.authors_info())
 
-    analyzer.sort_by_year_desc()
-    print("Sorted by Year (Descending):")
-    book_table.dump()
+        analyzer.sort_by_year_desc()
+        print("Sorted by Year (Descending):")
+        book_table.dump()
 
 if __name__ == "__main__":
     main()
