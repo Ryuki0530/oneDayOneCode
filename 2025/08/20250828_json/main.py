@@ -28,6 +28,44 @@ class Book_Table:
         for record in self.records:
             record.dump()
 
+class Book_Table_Analyzer:
+    def __init__(self, book_table: 'Book_Table'):
+        self.book_table = book_table
+
+    def total_stack(self):
+        sum = 0
+        for record in self.book_table.records:
+            sum += 1
+        return sum
+
+    def total_price(self):
+        sum = 0
+        for record in self.book_table.records:
+            sum += record.price
+        return sum
+
+    def authors_info(self):
+        author_stats = {}
+        for record in self.book_table.records:
+            author = record.author
+            if author not in author_stats:
+                author_stats[author] = {"count": 0, "total_price": 0}
+            author_stats[author]["count"] += 1
+            author_stats[author]["total_price"] += record.price
+
+        result = {}
+        for author, stats in author_stats.items():
+            avg_price = stats["total_price"] / stats["count"] if stats["count"] > 0 else 0
+            result[author] = {"count": stats["count"], "average_price": avg_price}
+        return result
+
+    def sort_by_author(self):
+        self.book_table.records.sort(key=lambda x: x.author)
+
+    def sort_by_year_desc(self):
+        self.book_table.records.sort(key=lambda x: x.year, reverse=True)
+
+
 class Json_Loader:
     def __init__(self, file_path: str, Book_Table: 'Book_Table'):
         self.file_path: str = file_path
@@ -69,3 +107,4 @@ class Json_Loader:
         except json.JSONDecodeError as e:
             print(f"JSON decode error: {e}")
             return []
+        
