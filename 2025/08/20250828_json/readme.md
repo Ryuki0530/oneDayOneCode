@@ -33,7 +33,6 @@ Author: Suzuki, Books: 1, Avg Price: 4500.0
 出版年が新しい順にソートしてタイトル一覧を出力
 
 ## 出力例:
-
 ```bash
 Books by Year (Newest First):
 2023: 機械学習ハンドブック
