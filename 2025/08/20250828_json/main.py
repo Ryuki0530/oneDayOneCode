@@ -112,15 +112,23 @@ def main():
     book_table = Book_Table()
     loader = Json_Loader(FILE_PATH, book_table)
     analyzer = Book_Table_Analyzer(book_table)
+    load_status = loader.load()
+    if load_status == 0:
+        pass
+    if load_status == 1:
+        print("Failed to load data.")
+        return 1
+    print("Total Books:", analyzer.total_stack())
+    print("Total Price:", analyzer.total_price())
     
-    if loader.load() == 0:
-        print("Total Books:", analyzer.total_stack())
-        print("Total Price:", analyzer.total_price())
-        print("Author ", analyzer.authors_info())
-
-        analyzer.sort_by_year_desc()
-        print("Sorted by Year (Descending):")
-        book_table.dump()
-
+    authors_info = analyzer.authors_info()
+    for author, info in authors_info.items():
+        print(f"Author: {author}, Books: {info['count']}, Avg Price: {info['average_price']}")
+    
+    analyzer.sort_by_year_desc()
+    print("Sorted by Year:")
+    for record in book_table.records:
+        print(f" {record.year}: {record.title}")
+        
 if __name__ == "__main__":
     main()
