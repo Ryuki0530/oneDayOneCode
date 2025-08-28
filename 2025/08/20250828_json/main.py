@@ -1,4 +1,5 @@
 import json
+FILE_PATH = "books.json"
 
 class Book_Record:
     def __init__(self, title, author, price, year):
@@ -109,7 +110,7 @@ class Json_Loader:
 
 def main():
     book_table = Book_Table()
-    loader = Json_Loader("books.json", book_table)
+    loader = Json_Loader(FILE_PATH, book_table)
 
     if loader.load() == 0:
         analyzer = Book_Table_Analyzer(book_table)

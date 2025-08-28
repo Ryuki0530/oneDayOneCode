@@ -1,0 +1,6 @@
+[
+  {"title": "Python入門", "author": "Tanaka", "price": 2800, "year": 2021},
+  {"title": "アルゴリズム図鑑", "author": "Sato", "price": 3200, "year": 2019},
+  {"title": "機械学習ハンドブック", "author": "Suzuki", "price": 4500, "year": 2023},
+  {"title": "データベース基礎", "author": "Tanaka", "price": 3000, "year": 2018}
+]
