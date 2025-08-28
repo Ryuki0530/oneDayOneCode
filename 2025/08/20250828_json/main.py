@@ -76,7 +76,7 @@ class Json_Loader:
         if raw_data:
             data = self._parse_records_json(raw_data)
         else:
-            print("No data to load.")
+            print("[ERROR]No data to load.")
             return 1
         
         if data:
@@ -88,7 +88,7 @@ class Json_Loader:
         try:
             return open(self.file_path, 'r', encoding='utf-8').read()
         except FileNotFoundError:
-            print(f"File not found: {self.file_path}")
+            print(f"[ERROR]File not found: {self.file_path}")
             return None
         
     def _parse_records_json(self, raw_data: str):
@@ -105,30 +105,36 @@ class Json_Loader:
                 records_array.append(record)
             return records_array
         except json.JSONDecodeError as e:
-            print(f"JSON decode error: {e}")
+            print(f"[ERROR]JSON decode error: {e}")
             return []
 
 def main():
     book_table = Book_Table()
     loader = Json_Loader(FILE_PATH, book_table)
     analyzer = Book_Table_Analyzer(book_table)
+    
+    # 読み込み実行
     load_status = loader.load()
     if load_status == 0:
         pass
     if load_status == 1:
-        print("Failed to load data.")
+        print("[ERROR]Failed to load data.")
         return 1
+    print("[INFO]Loaded Records")
+
+    print("===============Summary===============")
     print("Total Books:", analyzer.total_stack())
     print("Total Price:", analyzer.total_price())
-    
+    print("")
     authors_info = analyzer.authors_info()
     for author, info in authors_info.items():
         print(f"Author: {author}, Books: {info['count']}, Avg Price: {info['average_price']}")
-    
+    print("")
     analyzer.sort_by_year_desc()
     print("Sorted by Year:")
     for record in book_table.records:
         print(f" {record.year}: {record.title}")
+    print(" ")
         
 if __name__ == "__main__":
     main()
