@@ -1,0 +1,15 @@
+2025-08-29 09:01:23 INFO  [system] Application started successfully.
+2025-08-29 09:01:25 DEBUG [auth] Checking credentials for user=alice
+2025-08-29 09:01:25 INFO  [auth] User alice logged in
+2025-08-29 09:02:01 WARN  [payment] Payment delay detected for orderId=1024
+2025-08-29 09:02:05 ERROR [payment] Failed to process orderId=1025 : TimeoutException
+2025-08-29 09:02:07 INFO  [system] Memory usage = 512MB
+2025-08-29 09:03:15 DEBUG [db] Executing query SELECT * FROM users WHERE id=1
+2025-08-29 09:03:16 INFO  [db] Query completed in 123ms
+2025-08-29 09:04:00 ERROR [network] Connection reset by peer for socket 192.168.1.20
+2025-08-29 09:05:42 WARN  [system] Low disk space: 1.2GB remaining
+2025-08-29 09:06:00 INFO  [system] Cleanup job executed
+2025-08-29 09:07:12 INFO  [auth] User bob logged out
+2025-08-29 09:08:22 DEBUG [cache] Cache hit for key=session:alice
+2025-08-29 09:09:45 ERROR [payment] Invalid credit card number for orderId=1030
+2025-08-29 09:10:00 INFO  [system] Application shutting down
