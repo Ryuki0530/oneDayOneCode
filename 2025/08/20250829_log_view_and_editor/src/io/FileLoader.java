@@ -16,6 +16,7 @@ public class FileLoader {
             String line;
             while ((line = reader.readLine()) != null) {
                 content.append(line).append("\n");
+                // System.out.println("FileLoader read line: " + line);
             }
         } catch (IOException e) {
             e.printStackTrace();

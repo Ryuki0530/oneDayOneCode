@@ -3,7 +3,7 @@ package view;
 import java.awt.*;
 import javax.swing.*;
 import controller.Controller;
-
+import eventbus.*;
 public class LogFrame extends JFrame {
 
     private Controller controller;
@@ -16,23 +16,35 @@ public class LogFrame extends JFrame {
         this.controller = controller;
         setLayout(new BorderLayout());
 
-        add(new LogPanel(), BorderLayout.CENTER);
+        add(new LogPanel(controller.getEventBus()), BorderLayout.CENTER);
         add(new ToolBar(), BorderLayout.NORTH);
         add(new StatusBar(), BorderLayout.SOUTH);
 
         setJMenuBar(new MenuBar());
 
 
-
+        
     }
 }
 
 class LogPanel extends JPanel {
-    public LogPanel() {
+    private final JTextArea textArea = new JTextArea();
+
+    public LogPanel(EventBus bus) {
         setLayout(new BorderLayout());
-        JTextArea textArea = new JTextArea();
         textArea.setEditable(false);
         add(new JScrollPane(textArea), BorderLayout.CENTER);
+
+        // EventBus購読
+        bus.subscribe(LinesUpdated.class, evt -> 
+            SwingUtilities.invokeLater(() -> {
+                var sb = new StringBuilder();
+                for (String line : evt.lines()) {
+                    sb.append(line).append("\n");
+                }
+                textArea.setText(sb.toString());
+            })
+        );
     }
 }
 
