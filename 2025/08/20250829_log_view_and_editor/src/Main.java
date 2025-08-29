@@ -1,6 +1,5 @@
 import view.LogFrame;
 import controller.Controller;
-import io.FileLoader;
 
 public class Main {
     private String currentInputFilePath;

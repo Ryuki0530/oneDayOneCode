@@ -5,6 +5,7 @@ public class Controller {
     private String currentExportFilePath;
     private String currentFilterPattern;
     private boolean outToStdOut;
+    
     public Controller(
         String currentInputFilePath,
         String currentExportFilePath,
@@ -15,5 +16,9 @@ public class Controller {
         this.currentExportFilePath = currentExportFilePath;
         this.currentFilterPattern = currentFilterPattern;
         this.outToStdOut = outToStdOut;
+
+        LogDocument logDocument = new LogDocument();
+        logDocument.loadFile(currentInputFilePath);
+
     }
 }

@@ -10,7 +10,7 @@ public class FileLoader {
         this.filePath = filePath;
     }
 
-    public String loadFile() {
+    public String[] loadLines() {
         StringBuilder content = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;
@@ -20,6 +20,11 @@ public class FileLoader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return content.toString();
+        return content.toString().split("\n");
+    }
+
+    int setFilePath(String filePath) {
+        this.filePath = filePath;
+        return 0;
     }
 }
