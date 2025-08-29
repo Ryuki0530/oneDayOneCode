@@ -67,6 +67,10 @@ public class Controller {
         model.exportToStdout();
     }
 
+    public void saveViewToSameFile() {
+        model.saveViewToSameFile();
+    }
+
     public void exportToFile(String path) {
         model.exportToFile(Paths.get(path));
     }
