@@ -58,16 +58,16 @@ public class Controller {
         model.loadFile(path); // Model 側が LinesUpdated を publish する
     }
 
-    //TODO:あとで実装
+
     public void applyFilter(String pattern, boolean regex) {
-        // model.applyFilter(pattern, regex);
+        model.applyFilter(pattern, regex);
     }
 
     public void exportToStdout() {
-        // model.exportToStdout();
+        model.exportToStdout();
     }
 
     public void exportToFile(String path) {
-        // model.exportToFile(Paths.get(path));
+        model.exportToFile(Paths.get(path));
     }
 }
