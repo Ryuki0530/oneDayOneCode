@@ -50,7 +50,10 @@ class MainWindow(QWidget):
         if detected:
             msg = f"{now}：寝落ちを検出 {info}"
             self.log_list.addItem(msg)
+            self.status_label.setText(f"状態: 監視中（{now} 寝落ち検出）")
         else:
+            msg = f"{now}：判定OK"
+            self.log_list.addItem(msg)
             self.status_label.setText(f"状態: 監視中（{now} 判定OK）")
 
     def closeEvent(self, event):
