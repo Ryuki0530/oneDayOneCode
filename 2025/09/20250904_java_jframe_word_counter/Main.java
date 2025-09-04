@@ -43,7 +43,7 @@ class WordCounterUI extends JFrame {
         add(new JScrollPane(textArea), BorderLayout.CENTER);
         add(countButton, BorderLayout.SOUTH);
         add(resultLabel, BorderLayout.NORTH);
-
+git
         setVisible(true);
     }
 
