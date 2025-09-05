@@ -18,6 +18,6 @@ Hello World
 dlroW olleH
 ```
 
-## 制約
+## 制約 
 - `string.h`の関数（`strlen`など）は使用してよい。
 - 改行文字は反転結果に含めないこと。
