@@ -1,8 +1,12 @@
 package ui;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import core.CmdRunner;
+import core.ProcessFetcher;
 
 public class MainFrame extends JFrame {
+    private TaskManager taskManager;
+
     public MainFrame() {
         // Initialize the main frame
         setTitle("Task Manager");
