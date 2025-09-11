@@ -1,25 +1,42 @@
 from PyQt6 import QtWidgets, QtCore
+import sys
+from pathlib import Path
+
+from player.player_service import PlayerService
+
+
+def format_time(ms: int) -> str:
+    seconds = int(ms) // 1000
+    minutes = seconds // 60
+    seconds %= 60
+    return f"{minutes:02}:{seconds:02}"
 
 
 class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Music Player")
         self.setGeometry(100, 100, 800, 600)
 
-        # 中央ウィジェットとレイアウト
+        #PlayerServiceインスタンス化
+        self.player = PlayerService()
+        base = Path(__file__).parent.parent.parent / "music" / "track1"
+        playlist = sorted(base.glob("*.mp3"))
+        if not playlist:
+            print("No music files found.")
+            sys.exit(1)
+        self.player.load_playlist(playlist)
+
         central_widget = QtWidgets.QWidget(self)
         self.setCentralWidget(central_widget)
-
         layout = QtWidgets.QVBoxLayout(central_widget)
 
         # 再生位置スライダー
         pos_layout = QtWidgets.QHBoxLayout()
         self.label_pos = QtWidgets.QLabel("00:00")
         self.slider_pos = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
-        self.slider_pos.setRange(0, 100)  # ダミー範囲
-        self.label_dur = QtWidgets.QLabel("03:45")
-
+        self.slider_pos.setRange(0, 100)
+        self.label_dur = QtWidgets.QLabel("00:00")
         pos_layout.addWidget(self.label_pos)
         pos_layout.addWidget(self.slider_pos, 1)
         pos_layout.addWidget(self.label_dur)
@@ -30,38 +47,109 @@ class MainWindow(QtWidgets.QMainWindow):
         self.btn_play = QtWidgets.QPushButton("▶ Play")
         self.btn_pause = QtWidgets.QPushButton("⏸ Pause")
         self.btn_stop = QtWidgets.QPushButton("⏹ Stop")
-        controls_layout.addWidget(self.btn_play)
-        controls_layout.addWidget(self.btn_pause)
-        controls_layout.addWidget(self.btn_stop)
+        self.btn_prev = QtWidgets.QPushButton("⏮ Prev")
+        self.btn_next = QtWidgets.QPushButton("⏭ Next")
+        for b in (self.btn_play, self.btn_pause, self.btn_stop, self.btn_prev, self.btn_next):
+            controls_layout.addWidget(b)
         layout.addLayout(controls_layout)
 
         # 音量スライダー
         vol_layout = QtWidgets.QHBoxLayout()
         vol_label = QtWidgets.QLabel("Volume")
         self.slider_vol = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
-        self.slider_vol.setRange(0, 100)  # ダミー範囲
+        self.slider_vol.setRange(0, 100)
         self.slider_vol.setValue(50)
         self.label_vol = QtWidgets.QLabel("50%")
-
         vol_layout.addWidget(vol_label)
         vol_layout.addWidget(self.slider_vol, 1)
         vol_layout.addWidget(self.label_vol)
         layout.addLayout(vol_layout)
 
-        # --- イベント接続（確認用の print 出力だけ） ---
-        self.btn_play.clicked.connect(lambda: print("Play clicked"))
-        self.btn_pause.clicked.connect(lambda: print("Pause clicked"))
-        self.btn_stop.clicked.connect(lambda: print("Stop clicked"))
+        # イベント接続
+        self.btn_play.clicked.connect(self.on_play)
+        self.btn_pause.clicked.connect(self.on_pause)
+        self.btn_stop.clicked.connect(self.on_stop)
+        self.btn_next.clicked.connect(self.on_next)
+        self.btn_prev.clicked.connect(self.on_prev)
+        self.slider_vol.valueChanged.connect(self.on_volume_changed)
+        self.slider_pos.sliderReleased.connect(self.on_position_changed)
+        self.slider_pos.sliderPressed.connect(self.on_slider_pressed)
+        self.slider_pos.valueChanged.connect(self.on_slider_preview)
 
-        self.slider_pos.valueChanged.connect(lambda v: print(f"Position slider: {v}"))
-        self.slider_vol.valueChanged.connect(
-            lambda v: self.label_vol.setText(f"{v}%")
-        )
+        # タイマーを用いて再生位置を更新
+        self._user_dragging = False
+        self.timer = QtCore.QTimer(self)
+        self.timer.timeout.connect(self.update_position)
+        self.timer.start(500)
+
+        # 初期表示曲長
+        self.label_dur.setText(format_time(self.player.get_length()))
+
+    # UIからPlayerへブリッジ
+    def on_play(self):
+        self.player.play()
+
+    def on_pause(self):
+        self.player.pause()
+
+    def on_stop(self):
+        self.player.stop()
+        self.slider_pos.setValue(0)
+        self.label_pos.setText("00:00")
+
+    def on_next(self):
+        self.player.next_track()
+        self.after_track_change()
+
+    def on_prev(self):
+        self.player.prev_track()
+        self.after_track_change()
+
+    def after_track_change(self):
+        self.slider_pos.setValue(0)
+        self.label_pos.setText("00:00")
+        self.label_dur.setText(format_time(self.player.get_length()))
+
+    def on_volume_changed(self, value: int):
+        self.label_vol.setText(f"{value}%")
+        self.player.set_volume(value / 100.0)
+
+    def on_slider_pressed(self):
+        self._user_dragging = True
+
+    def on_slider_preview(self):
+        if self._user_dragging:
+            length = self.player.get_length()
+            if length > 0:
+                preview_ms = int(self.slider_pos.value() / 100 * length)
+                self.label_pos.setText(format_time(preview_ms))
+
+    def on_position_changed(self):
+        self._user_dragging = False
+        length = self.player.get_length()
+        if length <= 0:
+            return
+        seek_ms = int(self.slider_pos.value() / 100 * length)
+        self.player.set_position(seek_ms)
+        self.label_pos.setText(format_time(seek_ms))
+
+    def update_position(self):
+        self.player.update()
+        length = self.player.get_length()
+        if length <= 0:
+            return
+        if self._user_dragging:
+            return
+        pos = self.player.get_position()
+        self.label_pos.setText(format_time(pos))
+        self.label_dur.setText(format_time(length))
+        self.slider_pos.blockSignals(True)
+        self.slider_pos.setValue(int(pos / length * 100))
+        self.slider_pos.blockSignals(False)
 
 
 if __name__ == "__main__":
-    import sys
     app = QtWidgets.QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
+    w = MainWindow()
+    w.show()
     sys.exit(app.exec())
