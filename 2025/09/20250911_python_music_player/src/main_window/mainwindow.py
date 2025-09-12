@@ -57,6 +57,15 @@ class MainWindow(QtWidgets.QMainWindow):
         pos_layout.addWidget(self.label_dur)
         layout.addLayout(pos_layout)
 
+
+        # 曲情報表示
+        info_layout = QtWidgets.QVBoxLayout()
+        self.label_title = QtWidgets.QLabel("-")
+        self.label_artist = QtWidgets.QLabel("-")
+        info_layout.addWidget(self.label_title)
+        info_layout.addWidget(self.label_artist)
+        layout.addLayout(info_layout)
+
         # コントロールボタン
         controls_layout = QtWidgets.QHBoxLayout()
         self.btn_play = QtWidgets.QPushButton("PLAY")
@@ -126,6 +135,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def on_pause(self):
         self.player.pause()
+        self.update_track_info()
 
     def on_stop(self):
         self.player.stop()
@@ -142,7 +152,14 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def after_track_change(self):
         self.slider_pos.setValue(0)
+        self.update_track_info()
         self.label_pos.setText("00:00")
+    def update_track_info(self):
+        meta = self.player.get_metadata()
+        title = meta.get("title") or (self.player.get_current_path().stem if self.player.get_current_path() else "-")
+        artist = meta.get("artist") or "Unknown Artist"
+        self.label_title.setText(f"Title: {title}")
+        self.label_artist.setText(f"Artist: {artist}")
         self.label_dur.setText(format_time(self.player.get_length()))
 
     def on_volume_changed(self, value: int):

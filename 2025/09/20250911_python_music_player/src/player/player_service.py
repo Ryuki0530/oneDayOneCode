@@ -1,6 +1,7 @@
 import pygame
 from pathlib import Path
 from mutagen.mp3 import MP3
+from mutagen import File as MutagenFile
 import time
 
 
@@ -16,6 +17,8 @@ class PlayerService:
         # position tracking helpers
         self._base_pos_ms = 0  # seek origin (start offset inside track)
         self._is_paused = False
+        self._current_path = None
+        self._meta = {"title": None, "artist": None, "album": None}
 
         # 自動で次曲に行く処理のためにエンドイベントを設定
         self.MUSIC_END = pygame.USEREVENT + 1
@@ -28,7 +31,41 @@ class PlayerService:
         pygame.mixer.music.set_volume(self.volume)
         self._loaded = True
         print(f"Loaded: {path}")
-        self._length = int(MP3(str(path)).info.length * 1000)
+        # length & metadata via mutagen
+        self._current_path = path
+        self._length = 0
+        self._meta = {"title": None, "artist": None, "album": None}
+        try:
+            audio = MutagenFile(str(path), easy=True)
+        except Exception:
+            audio = None
+        if audio and getattr(audio, "info", None) and getattr(audio.info, "length", None):
+            try:
+                self._length = int(float(audio.info.length) * 1000)
+            except Exception:
+                self._length = 0
+        else:
+            # fallback for mp3
+            if path.suffix.lower() == ".mp3":
+                try:
+                    self._length = int(MP3(str(path)).info.length * 1000)
+                except Exception:
+                    self._length = 0
+        # metadata (title/artist/album)
+        if audio and getattr(audio, "tags", None):
+            def first(tag):
+                val = audio.tags.get(tag)
+                if isinstance(val, list):
+                    return val[0] if val else None
+                return val
+            self._meta = {
+                "title": first("title"),
+                "artist": first("artist"),
+                "album": first("album"),
+            }
+        # fallback title
+        if not self._meta.get("title"):
+            self._meta["title"] = path.stem
         self._base_pos_ms = 0
         self._is_paused = False
 
@@ -105,6 +142,13 @@ class PlayerService:
     def is_playing(self):
         return pygame.mixer.music.get_busy()
 
+    def get_metadata(self) -> dict:
+        """現在のトラックのメタデータ（title, artist, album）を返す"""
+        return dict(self._meta)
+
+    def get_current_path(self) -> Path | None:
+        return self._current_path
+
     def next_track(self):
         self.current_index += 1
         if self.current_index >= len(self.playlist):
@@ -155,7 +199,7 @@ class PlayerService:
 
 
 # =========================
-# ✅ テスト用コード（コマンド操作）
+# テスト用コード（コマンド操作）
 # =========================
 if __name__ == "__main__":
     import sys
