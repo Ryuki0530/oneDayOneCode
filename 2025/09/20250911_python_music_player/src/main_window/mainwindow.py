@@ -16,20 +16,35 @@ class MainWindow(QtWidgets.QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Music Player")
-        self.setGeometry(100, 100, 800, 600)
+        self.setGeometry(100, 100, 300, 100)
 
-        #PlayerServiceインスタンス化
         self.player = PlayerService()
-        base = Path(__file__).parent.parent.parent / "music" / "track1"
-        playlist = sorted(base.glob("*.mp3"))
-        if not playlist:
-            print("No music files found.")
-            sys.exit(1)
-        self.player.load_playlist(playlist)
+        self.music_base = Path(__file__).parent.parent.parent / "music"
+        init_folder = self.music_base / "track1"
+        playlist = self._collect_tracks(init_folder)
+        if playlist:
+            self.player.load_playlist(playlist)
+        else:
+            print("No music files found in track1.")
 
         central_widget = QtWidgets.QWidget(self)
         self.setCentralWidget(central_widget)
         layout = QtWidgets.QVBoxLayout(central_widget)
+
+        folder_layout = QtWidgets.QHBoxLayout()
+        folder_layout.addWidget(QtWidgets.QLabel("Folder"))
+        self.combo_folder = QtWidgets.QComboBox()
+        folders = [p for p in self.music_base.iterdir() if p.is_dir()]
+        names = sorted([p.name for p in folders])
+        for n in names:
+            self.combo_folder.addItem(n)
+        idx = self.combo_folder.findText("track1")
+        self.combo_folder.setCurrentIndex(idx if idx >= 0 else 0)
+        self.btn_load_folder = QtWidgets.QPushButton("Load")
+        self.btn_load_folder.clicked.connect(self.on_load_folder)
+        folder_layout.addWidget(self.combo_folder)
+        folder_layout.addWidget(self.btn_load_folder)
+        layout.addLayout(folder_layout)
 
         # 再生位置スライダー
         pos_layout = QtWidgets.QHBoxLayout()
@@ -44,11 +59,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # コントロールボタン
         controls_layout = QtWidgets.QHBoxLayout()
-        self.btn_play = QtWidgets.QPushButton("▶ Play")
-        self.btn_pause = QtWidgets.QPushButton("⏸ Pause")
-        self.btn_stop = QtWidgets.QPushButton("⏹ Stop")
-        self.btn_prev = QtWidgets.QPushButton("⏮ Prev")
-        self.btn_next = QtWidgets.QPushButton("⏭ Next")
+        self.btn_play = QtWidgets.QPushButton("PLAY")
+        self.btn_pause = QtWidgets.QPushButton("PAUSE")
+        self.btn_stop = QtWidgets.QPushButton("STOP")
+        self.btn_prev = QtWidgets.QPushButton("PREV")
+        self.btn_next = QtWidgets.QPushButton("NEXT")
         for b in (self.btn_play, self.btn_pause, self.btn_stop, self.btn_prev, self.btn_next):
             controls_layout.addWidget(b)
         layout.addLayout(controls_layout)
@@ -86,6 +101,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.label_dur.setText(format_time(self.player.get_length()))
 
     # UIからPlayerへブリッジ
+
+    def _collect_tracks(self, folder: Path) -> list[Path]:
+        if not folder.exists():
+            return []
+        tracks = []
+        tracks.extend(sorted(folder.glob("*.mp3")))
+        tracks.extend(sorted(folder.glob("*.wav")))
+        return tracks
+
+    def on_load_folder(self):
+        name = self.combo_folder.currentText()
+        folder = self.music_base / name
+        tracks = self._collect_tracks(folder)
+        if not tracks:
+            QtWidgets.QMessageBox.warning(self, "No Tracks", f"No audio files in {folder}")
+            return
+        self.player.stop()
+        self.player.load_playlist(tracks)
+        self.after_track_change()
+
     def on_play(self):
         self.player.play()
 
