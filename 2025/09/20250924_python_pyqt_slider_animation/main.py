@@ -27,6 +27,49 @@ class SliderDemo(QWidget):
         self.slider.setAttribute(Qt.WidgetAttribute.WA_TransparentForMouseEvents, True)
         self.slider.setFocusPolicy(Qt.FocusPolicy.NoFocus)
 
+        self.slider.setStyleSheet(
+            """
+            QSlider::groove:horizontal {
+                border: none;
+                height: 10px;
+                margin: 0px;
+                border-radius: 5px;
+                background: qlineargradient(
+                    x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #dcdcdc,
+                    stop:1 #f5f5f5
+                );
+            }
+
+            QSlider::sub-page:horizontal {
+                background: qlineargradient(
+                    x1:0, y1:0, x2:1, y2:0,
+                    stop:0 #66ccff,
+                    stop:1 #3399ff
+                );
+                border: none;
+                height: 10px;
+                border-radius: 5px;
+            }
+
+            QSlider::add-page:horizontal {
+                background: transparent;
+                border: none;
+                height: 10px;
+                border-radius: 5px;
+            }
+
+            /* つまみを消す */
+            QSlider::handle:horizontal {
+                background: transparent;
+                border: none;
+                width: 0px;
+            }
+
+            """    
+        )
+
+
         # ---- レイアウト ----
         row = QHBoxLayout()
         row.addWidget(self.input_label)
