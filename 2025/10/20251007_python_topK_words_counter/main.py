@@ -9,6 +9,8 @@ def words_from_text(text):
 def count_words(words):
     return Counter(words)
 
+def sort_word_counts(counter):
+    return sorted(counter.items(), key=lambda x: (-x[1], x[0]))
 
 def main():
     input_lines = sys.stdin.read().splitlines()
@@ -18,10 +20,11 @@ def main():
     text = '\n'.join(input_lines[1:])
     words = words_from_text(text)
     counter = count_words(words)
-    for word, count in counter.items():
-        print(f"{word} {count}")
-    
 
+    sorted_items = sort_word_counts(counter)
+
+    for word, count in sorted_items[:K]:
+        print(f"{word} {count}")
 
 if __name__ == "__main__":
     main()
