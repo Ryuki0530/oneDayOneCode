@@ -1,10 +1,11 @@
 import random
 import sys
 import pygame
+import math
 
 WIDTH, HEIGHT = 480, 640
 FPS = 60
-PLAYER_SIZE = (60, 12)
+PLAYER_SIZE = (10, 20)
 ENEMY_SIZE = (20, 38)
 START_SPEED = 6
 MAX_SPEED = 12
@@ -24,13 +25,22 @@ class Player:
         )
 
     def update(self, dt, keys):
-        move = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (
+        # 横移動: ←/→ または A/D
+        move_x = (keys[pygame.K_RIGHT] or keys[pygame.K_d]) - (
             keys[pygame.K_LEFT] or keys[pygame.K_a]
         )
-        self.rect.x += move * self.speed * dt
+        # 縦移動: ↑/↓ または W/S
+        move_y = (keys[pygame.K_DOWN] or keys[pygame.K_s]) - (
+            keys[pygame.K_UP] or keys[pygame.K_w]
+        )
+        self.rect.x += move_x * self.speed * dt
+        self.rect.y += move_y * self.speed * dt
+        # 画面内に制限
         self.rect.x = max(0, min(self.rect.x, WIDTH - self.rect.width))
+        self.rect.y = max(0, min(self.rect.y, HEIGHT - self.rect.height))
 
     def shoot(self):
+        # プレイヤーの上方向に弾を出す
         return BulletFromPlayer(self.rect.centerx - 2, self.rect.top)
 
     def draw(self, surface):
@@ -51,11 +61,37 @@ class BulletFromPlayer:
     def off_screen(self):
         return self.rect.bottom < 0
 
+class BulletFromEnemy:
+    def __init__(self, x, y, target_x, target_y, speed=3):
+        self.rect = pygame.Rect(x - 3, y - 3, 6, 6)
+        dx = target_x - x
+        dy = target_y - y
+        dist = math.hypot(dx, dy) or 1.0
+        self.vx = dx / dist * speed
+        self.vy = dy / dist * speed
+
+    def update(self, dt):
+        self.rect.x += self.vx * dt
+        self.rect.y += self.vy * dt
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, pygame.Color("orange"), self.rect)
+
+    def off_screen(self):
+        return (
+            self.rect.top > HEIGHT
+            or self.rect.bottom < 0
+            or self.rect.right < 0
+            or self.rect.left > WIDTH
+        )
+
 class Enemy:
     def __init__(self, speed):
         x = random.randint(0, WIDTH - ENEMY_SIZE[0])
         self.rect = pygame.Rect(x, -ENEMY_SIZE[1], *ENEMY_SIZE)
         self.speed = speed
+        # next_shot in ms: set initial random delay
+        self.next_shot = pygame.time.get_ticks() + random.randint(800, 1600)
 
     def update(self, dt):
         self.rect.y += self.speed * dt
@@ -82,6 +118,7 @@ def game_loop(screen, clock):
     player = Player()
     enemies = []
     bullets = []
+    enemy_bullets = []
     score = 0
     spawn_delay = START_SPAWN_DELAY
     last_spawn = pygame.time.get_ticks()
@@ -108,7 +145,7 @@ def game_loop(screen, clock):
         if state == "PLAYING":
             player.update(dt, keys)
 
-            # bullets update / draw / collisions
+            # プレイヤー弾 update / draw / collisions
             for bullet in bullets[:]:
                 bullet.update(dt)
                 bullet.draw(screen)
@@ -131,6 +168,7 @@ def game_loop(screen, clock):
                         score += 1
                         break
 
+            # 敵弾発射（各敵がプレイヤーの当時の座標に向けて発射）
             now = pygame.time.get_ticks()
             if now - last_spawn >= spawn_delay:
                 spawn_enemy(enemies, enemy_speed)
@@ -139,18 +177,49 @@ def game_loop(screen, clock):
                 enemy_speed = min(MAX_SPEED, enemy_speed + DIFFICULTY_STEP)
 
             for enemy in enemies[:]:
+                # 敵が定期発射するかチェック
+                now = pygame.time.get_ticks()
+                if now >= enemy.next_shot:
+                    # 次の発射タイミングをセット
+                    enemy.next_shot = now + random.randint(800, 1600)
+                    # 発射時のプレイヤー中心座標をターゲットにする
+                    tx, ty = player.rect.centerx, player.rect.centery
+                    enemy_bullets.append(BulletFromEnemy(enemy.rect.centerx, enemy.rect.bottom, tx, ty))
+
                 enemy.update(dt)
                 enemy.draw(screen)
                 if enemy.rect.colliderect(player.rect):
                     state = "GAME_OVER"
                 if enemy.off_screen():
-                    enemies.remove(enemy)
-                    score += 1
+                    try:
+                        enemies.remove(enemy)
+                    except ValueError:
+                        pass
+
+
+            # 敵弾 update / draw / プレイヤー判定
+            for eb in enemy_bullets[:]:
+                eb.update(dt)
+                eb.draw(screen)
+                if eb.off_screen():
+                    try:
+                        enemy_bullets.remove(eb)
+                    except ValueError:
+                        pass
+                    continue
+                if eb.rect.colliderect(player.rect):
+                    state = "GAME_OVER"
+                    try:
+                        enemy_bullets.remove(eb)
+                    except ValueError:
+                        pass
 
             player.draw(screen)
         else:
             for enemy in enemies:
                 enemy.draw(screen)
+            for eb in enemy_bullets:
+                eb.draw(screen)
             player.draw(screen)
             draw_text(screen, "GAME OVER", 54, pygame.Color("white"), (WIDTH // 2, HEIGHT // 2 - 40), "center")
             draw_text(screen, "R: Restart / ESC: Exit", 24, pygame.Color("lightgray"), (WIDTH // 2, HEIGHT // 2 + 20), "center")
