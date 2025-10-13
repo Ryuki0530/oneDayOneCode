@@ -5,8 +5,8 @@ import pygame
 WIDTH, HEIGHT = 480, 640
 FPS = 60
 PLAYER_SIZE = (60, 12)
-ENEMY_SIZE = (30, 18)
-START_SPEED = 4
+ENEMY_SIZE = (20, 38)
+START_SPEED = 6
 MAX_SPEED = 12
 START_SPAWN_DELAY = 900
 MIN_SPAWN_DELAY = 240
@@ -30,9 +30,26 @@ class Player:
         self.rect.x += move * self.speed * dt
         self.rect.x = max(0, min(self.rect.x, WIDTH - self.rect.width))
 
+    def shoot(self):
+        return BulletFromPlayer(self.rect.centerx - 2, self.rect.top)
+
     def draw(self, surface):
         pygame.draw.rect(surface, pygame.Color("dodgerblue"), self.rect)
 
+
+class BulletFromPlayer:
+    def __init__(self, x, y):
+        self.rect = pygame.Rect(x, y, 4, 10)
+        self.speed = -10
+
+    def update(self, dt):
+        self.rect.y += self.speed * dt
+
+    def draw(self, surface):
+        pygame.draw.rect(surface, pygame.Color("yellow"), self.rect)
+
+    def off_screen(self):
+        return self.rect.bottom < 0
 
 class Enemy:
     def __init__(self, speed):
@@ -64,6 +81,7 @@ def draw_text(surface, text, size, color, pos, anchor="topleft"):
 def game_loop(screen, clock):
     player = Player()
     enemies = []
+    bullets = []
     score = 0
     spawn_delay = START_SPAWN_DELAY
     last_spawn = pygame.time.get_ticks()
@@ -82,11 +100,36 @@ def game_loop(screen, clock):
                     return score, False
                 if state == "GAME_OVER" and event.key == pygame.K_r:
                     return score, True
+                if event.key == pygame.K_SPACE and state == "PLAYING":
+                    bullets.append(player.shoot())
 
         screen.fill(pygame.Color("black"))
 
         if state == "PLAYING":
             player.update(dt, keys)
+
+            # bullets update / draw / collisions
+            for bullet in bullets[:]:
+                bullet.update(dt)
+                bullet.draw(screen)
+                if bullet.off_screen():
+                    try:
+                        bullets.remove(bullet)
+                    except ValueError:
+                        pass
+                    continue
+                for enemy in enemies[:]:
+                    if bullet.rect.colliderect(enemy.rect):
+                        try:
+                            enemies.remove(enemy)
+                        except ValueError:
+                            pass
+                        try:
+                            bullets.remove(bullet)
+                        except ValueError:
+                            pass
+                        score += 1
+                        break
 
             now = pygame.time.get_ticks()
             if now - last_spawn >= spawn_delay:
