@@ -7,12 +7,14 @@ WIDTH, HEIGHT = 480, 640
 FPS = 60
 PLAYER_SIZE = (10, 20)
 ENEMY_SIZE = (20, 38)
-START_SPEED = 6
+START_SPEED = 3
 MAX_SPEED = 12
 START_SPAWN_DELAY = 900
 MIN_SPAWN_DELAY = 240
 DIFFICULTY_STEP = 0.02
 FONT_NAME = "consolas"
+ENEMY_BULLET_SPEED = 2
+PLAYER_SHOT_LATE = 6  # FPS
 
 
 class Player:
@@ -23,6 +25,7 @@ class Player:
             HEIGHT - PLAYER_SIZE[1] - 20,
             *PLAYER_SIZE,
         )
+        self.next_can_shoot_frames = PLAYER_SHOT_LATE
 
     def update(self, dt, keys):
         # 横移動: ←/→ または A/D
@@ -38,9 +41,13 @@ class Player:
         # 画面内に制限
         self.rect.x = max(0, min(self.rect.x, WIDTH - self.rect.width))
         self.rect.y = max(0, min(self.rect.y, HEIGHT - self.rect.height))
+        self.next_can_shoot_frames -= 1
 
     def shoot(self):
         # プレイヤーの上方向に弾を出す
+        if self.next_can_shoot_frames > 0:
+            return None
+        self.next_can_shoot_frames = PLAYER_SHOT_LATE
         return BulletFromPlayer(self.rect.centerx - 2, self.rect.top)
 
     def draw(self, surface):
@@ -62,7 +69,7 @@ class BulletFromPlayer:
         return self.rect.bottom < 0
 
 class BulletFromEnemy:
-    def __init__(self, x, y, target_x, target_y, speed=3):
+    def __init__(self, x, y, target_x, target_y, speed=ENEMY_BULLET_SPEED):
         self.rect = pygame.Rect(x - 3, y - 3, 6, 6)
         dx = target_x - x
         dy = target_y - y
@@ -137,15 +144,20 @@ def game_loop(screen, clock):
                     return score, False
                 if state == "GAME_OVER" and event.key == pygame.K_r:
                     return score, True
-                if event.key == pygame.K_SPACE and state == "PLAYING":
-                    bullets.append(player.shoot())
+                # (スペース押しっぱなしの処理はここでは行わない)
 
         screen.fill(pygame.Color("black"))
 
         if state == "PLAYING":
             player.update(dt, keys)
 
-            # プレイヤー弾 update / draw / collisions
+            # スペースを押しっぱなしでの射撃（プレイヤーのフレーム毎のクールダウン管理を使う）
+            if keys[pygame.K_SPACE]:
+                b = player.shoot()
+                if b:
+                    bullets.append(b)
+            
+             # プレイヤー弾 update / draw / collisions
             for bullet in bullets[:]:
                 bullet.update(dt)
                 bullet.draw(screen)
