@@ -1,0 +1,32 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "cl",
+            "args": [
+                "/EHsc",
+                "/Fe:${workspaceFolder}/${input:executableName}.exe",
+                "${workspaceFolder}/WinMain.cpp",
+                "/link",
+                "user32.lib",
+                "d3d11.lib",
+                "dxgi.lib"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$msCompile"
+            ]
+        }
+    ],
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "executableName",
+            "description": "Name for the executable to build (without extension)"
+        }
+    ]
+}
