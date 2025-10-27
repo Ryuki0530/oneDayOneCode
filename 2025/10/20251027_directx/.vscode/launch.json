@@ -1,0 +1,19 @@
+{
+    "configurations": [
+        {
+            "type": "cppvsdbg",
+            "request": "launch",
+            "name": "Launch WinMain (MSVC)",
+            "program": "${workspaceFolder}/${input:executableName}.exe",
+            "cwd": "${workspaceFolder}",
+            "preLaunchTask": "build"
+        }
+    ],
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "executableName",
+            "description": "Name for the executable to build (without extension)"
+        }
+    ]
+}
