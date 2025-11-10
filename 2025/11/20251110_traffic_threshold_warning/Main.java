@@ -93,6 +93,19 @@ public class Main {
         int check_window_min = W;
         int threshold = T;
         boolean DEBUG = false;
+
+        TrafficManager manager = new TrafficManager(check_window_min, threshold);
+        
+        for (int i = 0; i < log_len; i++) {
+            String timeStr = sc.next();
+            int volume = sc.nextInt();
+            LocalDateTime time = LocalDateTime.parse(timeStr);
+            OneTrafficInfo info = new OneTrafficInfo(time, volume);
+            int result = manager.addInfoAndIsSafe(info);
+            if (DEBUG) {
+                System.out.println("Added: " + timeStr + " Volume: " + volume + " Result: " + result);
+            }
+        }
         sc.close(); 
     }
 }
