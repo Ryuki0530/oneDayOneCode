@@ -1,11 +1,15 @@
+// Main.java
 import java.util.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 class OneTrafficInfo {
     private final LocalDateTime time;
-    private final int volume;
+    // ★変更: volumeは合計でintを超える可能性があるためlongに
+    private final long volume;
 
-    public OneTrafficInfo(LocalDateTime time, int volume) {
+    // ★変更: 引数型をlongへ
+    public OneTrafficInfo(LocalDateTime time, long volume) {
         this.time = time;
         this.volume = volume;
     }
@@ -14,54 +18,54 @@ class OneTrafficInfo {
         return time;
     }
 
-    public int getVolume() {
+    public long getVolume() {
         return volume;
     }
 }
 
-
 class TrafficManager {
     private Queue<OneTrafficInfo> TrafficLog;
-    private int currentSum;
-    private int threshold;
+    // ★変更: 合計はlongで持つ
+    private long currentSum;
+    // ★変更: しきい値もlong
+    private long threshold;
     private int windowSizeMin;
-    private LocalDateTime threshholdTime;
+    private LocalDateTime threshholdTime; // NOTE: スペルは元のまま保持
     private LocalDateTime lastAddedTime;
-    
-    public TrafficManager(int windowSizeMin,int threshold) {
+
+    public TrafficManager(int windowSizeMin, long threshold) {
         this.TrafficLog = new LinkedList<>();
         this.windowSizeMin = windowSizeMin;
-        this.currentSum = 0;
+        this.currentSum = 0L; // ★変更: long初期化
         this.threshold = threshold;
         this.threshholdTime = null;
         this.lastAddedTime = null;
     }
-    
+
+    /**
+     * 正常に追加 & 未到達: 0
+     * 正常に追加 & 到達(初回かは呼び出し側で制御): 1
+     * 異常: -1
+     */
     public int addInfoAndIsSafe(OneTrafficInfo info) {
-        /*
-        正常に追加され、問題が無ければ0
-        正常に追加され、追加されたOneTrafficInfoのlocalDateTimeから
-        直近windowSizeMin分前までの合計通信料がthresholdを超えていれば1
-        異常が発生し、追加されなければ-1
-        例えば、windowSizeMinが5分、thresholdが1000MBの場合
-        1. 現在時刻が12:00で、過去5分
-        2. 12:00に200MBの通信が発生し追加
-        3. 12:01に300MBの通信が発生し追加
-        4. 12:02に600MBの通信が発生し追加
-        5. 12:03に100MBの通信が発生し追
-        この場合、12:02に追加された600MBの通信を含む
-        直近5分間の通信量は200+300+600=1100MBとなり、thresholdを超えているため4件目のデータ入力時に1を返す。
-        */
-        
-        LocalDateTime thresholdTime = info.getTime().minusMinutes(windowSizeMin);
+        // ★変更: ウィンドウ境界のオフバイワン修正
+        // 仕様: [t - (W - 1) 分, t] の閉区間
+        // → 捨てる条件: old.time < t - (W - 1) 分
+        LocalDateTime startInclusive = info.getTime().minusMinutes(Math.max(0, windowSizeMin - 1));
+
         TrafficLog.add(info);
         lastAddedTime = info.getTime();
         currentSum += info.getVolume();
-        while (!TrafficLog.isEmpty() && TrafficLog.peek().getTime().isBefore(thresholdTime)) {
+
+        while (!TrafficLog.isEmpty() && TrafficLog.peek().getTime().isBefore(startInclusive)) {
             OneTrafficInfo oldInfo = TrafficLog.poll();
             currentSum -= oldInfo.getVolume();
         }
-        if (currentSum > threshold) {
+
+        // ★変更: ">" を "?" に
+        if (currentSum >= threshold) {
+            // ★補足: 最初の検知時刻は呼び出し側で即時出力＆終了するため、
+            // ここでは記録だけ残す（互換性維持のため既存フィールドに格納）
             threshholdTime = info.getTime();
             return 1;
         }
@@ -82,39 +86,48 @@ class TrafficManager {
 }
 
 public class Main {
-
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+
         int N = sc.nextInt();
         int W = sc.nextInt();
-        int T = sc.nextInt();
+        // ★変更: Tはlongで受ける
+        long T = sc.nextLong();
         sc.nextLine();
 
-        int log_len = N;
-        int check_window_min = W;
-        int threshold = T;
         boolean DEBUG = false;
+        DateTimeFormatter outFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        TrafficManager manager = new TrafficManager(check_window_min, threshold);
-        
-        for (int i = 0; i < log_len; i++) {
+        TrafficManager manager = new TrafficManager(W, T);
+
+        for (int i = 0; i < N; i++) {
             String input = sc.nextLine();
+            // 行は "YYYY-MM-DD HH:MM bytes"
             String[] parts = input.split(" ");
-            String DateStr = parts[0];
-            String timeStr = DateStr + "T" + parts[1];
-            int volume = Integer.parseInt(parts[2]);
-            LocalDateTime time = LocalDateTime.parse(timeStr);
+            String timeStr = parts[0] + "T" + parts[1];
+
+            // ★変更: volumeをlongでパース
+            long volume = Long.parseLong(parts[2]);
+
+            LocalDateTime time = LocalDateTime.parse(timeStr); // ISO-LOCAL-DATE-TIME 形式
             OneTrafficInfo info = new OneTrafficInfo(time, volume);
+
             int result = manager.addInfoAndIsSafe(info);
+
             if (DEBUG) {
-                System.out.println("Added: " + timeStr + " Volume: " + volume + " Result: " + result);
+                System.out.println("Added: " + parts[0] + " " + parts[1] + " Volume: " + volume + " Result: " + result);
+            }
+
+            // ★変更: 「最初に到達した時刻」を検出した瞬間に出力して終了
+            if (result == 1) {
+                System.out.println(manager.getThreshholdTime().format(outFmt));
+                sc.close();
+                return;
             }
         }
-        sc.close(); 
-        if (manager.isSafe()) {
-            System.out.println("OK");
-        } else {
-            System.out.println(manager.getThreshholdTime());
-        }
+        sc.close();
+
+        // ★変更: 最後まで未到達ならOK
+        System.out.println("OK");
     }
 }
