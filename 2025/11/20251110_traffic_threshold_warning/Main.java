@@ -39,18 +39,18 @@ class TrafficManager {
     
     public int addInfoAndIsSafe(OneTrafficInfo info) {
         /*
-        æ­£å¸¸ã«è¿½åŠ ã•ã‚Œã€å•é¡ŒãŒç„¡ã‘ã‚Œã°0
-        æ­£å¸¸ã«è¿½åŠ ã•ã‚Œã€è¿½åŠ ã•ã‚ŒãŸOneTrafficInfoã®localDateTimeã‹ã‚‰
-        ç›´è¿‘windowSizeMinåˆ†å‰ã¾ã§ã®åˆè¨ˆé€šä¿¡æ–™ãŒthresholdã‚’è¶…ãˆã¦ã„ã‚Œã°1
-        ç•°å¸¸ãŒç™ºç”Ÿã—ã€è¿½åŠ ã•ã‚Œãªã‘ã‚Œã°-1
-        ä¾‹ãˆã°ã€windowSizeMinãŒ5åˆ†ã€thresholdãŒ1000MBã®å ´åˆ
-        1. ç¾åœ¨æ™‚åˆ»ãŒ12:00ã§ã€éå»5åˆ†
-        2. 12:00ã«200MBã®é€šä¿¡ãŒç™ºç”Ÿã—è¿½åŠ 
-        3. 12:01ã«300MBã®é€šä¿¡ãŒç™ºç”Ÿã—è¿½åŠ 
-        4. 12:02ã«600MBã®é€šä¿¡ãŒç™ºç”Ÿã—è¿½åŠ 
-        5. 12:03ã«100MBã®é€šä¿¡ãŒç™ºç”Ÿã—è¿½
-        ã“ã®å ´åˆã€12:02ã«è¿½åŠ ã•ã‚ŒãŸ600MBã®é€šä¿¡ã‚’å«ã‚€
-        ç›´è¿‘5åˆ†é–“ã®é€šä¿¡é‡ã¯200+300+600=1100MBã¨ãªã‚Šã€thresholdã‚’è¶…ãˆã¦ã„ã‚‹ãŸã‚4ä»¶ç›®ã®ãƒ‡ãƒ¼ã‚¿å…¥åŠ›æ™‚ã«1ã‚’è¿”ã™ã€‚
+        ³í‚É’Ç‰Á‚³‚êA–â‘è‚ª–³‚¯‚ê‚Î0
+        ³í‚É’Ç‰Á‚³‚êA’Ç‰Á‚³‚ê‚½OneTrafficInfo‚ÌlocalDateTime‚©‚ç
+        ’¼‹ßwindowSizeMin•ª‘O‚Ü‚Å‚Ì‡Œv’ÊM—¿‚ªthreshold‚ğ’´‚¦‚Ä‚¢‚ê‚Î1
+        ˆÙí‚ª”­¶‚µA’Ç‰Á‚³‚ê‚È‚¯‚ê‚Î-1
+        —á‚¦‚ÎAwindowSizeMin‚ª5•ªAthreshold‚ª1000MB‚Ìê‡
+        1. Œ»İ‚ª12:00‚ÅA‰ß‹5•ª
+        2. 12:00‚É200MB‚Ì’ÊM‚ª”­¶‚µ’Ç‰Á
+        3. 12:01‚É300MB‚Ì’ÊM‚ª”­¶‚µ’Ç‰Á
+        4. 12:02‚É600MB‚Ì’ÊM‚ª”­¶‚µ’Ç‰Á
+        5. 12:03‚É100MB‚Ì’ÊM‚ª”­¶‚µ’Ç
+        ‚±‚Ìê‡A12:02‚É’Ç‰Á‚³‚ê‚½600MB‚Ì’ÊM‚ğŠÜ‚Ş
+        ’¼‹ß5•ªŠÔ‚Ì’ÊM—Ê‚Í200+300+600=1100MB‚Æ‚È‚èAthreshold‚ğ’´‚¦‚Ä‚¢‚é‚½‚ß4Œ–Ú‚Ìƒf[ƒ^“ü—Í‚É1‚ğ•Ô‚·B
         */
         
         LocalDateTime thresholdTime = info.getTime().minusMinutes(windowSizeMin);
@@ -88,6 +88,7 @@ public class Main {
         int N = sc.nextInt();
         int W = sc.nextInt();
         int T = sc.nextInt();
+        sc.nextLine();
 
         int log_len = N;
         int check_window_min = W;
@@ -97,8 +98,11 @@ public class Main {
         TrafficManager manager = new TrafficManager(check_window_min, threshold);
         
         for (int i = 0; i < log_len; i++) {
-            String timeStr = sc.next();
-            int volume = sc.nextInt();
+            String input = sc.nextLine();
+            String[] parts = input.split(" ");
+            String DateStr = parts[0];
+            String timeStr = DateStr + "T" + parts[1];
+            int volume = Integer.parseInt(parts[2]);
             LocalDateTime time = LocalDateTime.parse(timeStr);
             OneTrafficInfo info = new OneTrafficInfo(time, volume);
             int result = manager.addInfoAndIsSafe(info);
@@ -107,5 +111,10 @@ public class Main {
             }
         }
         sc.close(); 
+        if (manager.isSafe()) {
+            System.out.println("OK");
+        } else {
+            System.out.println(manager.getThreshholdTime());
+        }
     }
 }
