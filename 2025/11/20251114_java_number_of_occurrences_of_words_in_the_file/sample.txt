@@ -1,0 +1,11 @@
+This is a simple sample text file.
+It contains several words, some of which appear more frequently than others.
+The purpose of this file is to test the WordCount program.
+
+Hello world! This file includes numbers like 123 and 456.
+Words like Java, java, and JAVA should all be counted as the same word.
+
+The quick brown fox jumps over the lazy dog.
+The quick brown fox jumps again. The dog sleeps.
+
+This file repeats certain words to check frequency frequency frequency.
