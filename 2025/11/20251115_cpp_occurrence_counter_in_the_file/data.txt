@@ -1,0 +1,14 @@
+Hello, world!
+This is a test file. This file contains some words.
+
+The cat and the dog are friends.
+THE CAT chased the mouse.
+hello HELLO HeLLo?
+
+And then, the cat slept.
+and AND aNd.
+
+Numbers like A1B2C3 should also count as words.
+Edge-case: hello-world should count as two words (hello, world).
+
+the the the and and cat CAT Cat
