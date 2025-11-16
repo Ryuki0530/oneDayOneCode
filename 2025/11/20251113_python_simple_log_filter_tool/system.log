@@ -1,0 +1,11 @@
+[2025-11-13 10:01:22] INFO    Application started successfully.
+[2025-11-13 10:01:23] INFO    User 'alice' logged in.
+[2025-11-13 10:01:24] WARNING Disk usage at 82%.
+[2025-11-13 10:01:25] ERROR   Failed to load module 'renderer'.
+[2025-11-13 10:01:26] INFO    Attempting recovery...
+[2025-11-13 10:01:27] ERROR   Recovery failed: missing dependency 'libXYZ'.
+[2025-11-13 10:01:28] INFO    User 'bob' logged in.
+[2025-11-13 10:01:29] DEBUG   Cache miss on query id=43.
+[2025-11-13 10:01:30] WARNING Network latency above threshold.
+[2025-11-13 10:01:31] INFO    Background job processed (id=8821).
+[2025-11-13 10:01:32] ERROR   Unexpected end of configuration file.
