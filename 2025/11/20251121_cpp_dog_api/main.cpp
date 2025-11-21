@@ -120,16 +120,29 @@ int main() {
 
     // APIを使用してJSONデータを取得
     std::string json_data = get_json_data(api_url);
+    if (json_data.empty()) {
+        std::cerr << "Failed to retrieve JSON data from API!" << std::endl;
+        return 1;
+    }
     std::cout << "Received response: " << json_data << std::endl;
     // JSONデータを解析して画像URLを取得
     std::string img_url = image_url(json_data);
+    if (img_url.empty()) {
+        std::cerr << "Failed to extract image URL from JSON data!" << std::endl;
+        return 1;
+    }
     // 画像URLを使用して画像をダウンロードして表示
     std::cout << "Downloading Dog Image from: " << img_url << "..."<< std::endl;
     std::string img_path = get_dog_image(img_url);
+    if (img_path.empty()) {
+        std::cerr << "Failed to download dog image!" << std::endl;
+        return 1;
+    }
     std::cout << "Image saved to: " << img_path << std::endl;
     std::cout << "Opening image..." << std::endl;
-    view_image(img_path);
+    if (!view_image(img_path)) {
+        return 1;
+    }
     std::cout << "Enjoy Dog Image! \nGoodbye! Happy Hacking!!" << std::endl;
-
     return 0;
 }
