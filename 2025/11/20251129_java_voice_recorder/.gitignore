@@ -1,0 +1,42 @@
+
+# Gradle
+.gradle/
+
+
+# Gradle Wrapper
+gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
+
+# IntelliJ
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+
+# NetBeans/Eclipse
+.project
+.classpath
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local config
+local.properties
+
+# Audio recordings (ignore generated large files)
+VoiceMemo/*.wav
+VoiceMemo/*.mp3
+VoiceMemo/*.m4a
+
+# Keep the folder but ignore its contents if needed
+# VoiceMemo/**/!(.gitkeep)
