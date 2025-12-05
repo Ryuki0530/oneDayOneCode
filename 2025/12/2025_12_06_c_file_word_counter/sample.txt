@@ -1,6 +1,0 @@
-This  is   a   sample text file.
-It contains multiple lines,
-and    irregular   spacing.
-
-C programming is fun!
-Let's count how many words are here.
