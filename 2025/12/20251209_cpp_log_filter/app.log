@@ -1,0 +1,9 @@
+[INFO] Application started
+[DEBUG] Initializing modules
+[ERROR] Failed to load config
+[INFO] Ready
+[DEBUG] Module initialized
+[ERROR] Unexpected shutdown
+[INFO] Restarting application
+[DEBUG] Cleanup complete
+[INFO] Application terminated
