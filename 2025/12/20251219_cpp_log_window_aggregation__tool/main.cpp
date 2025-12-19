@@ -51,7 +51,7 @@ int main() {
         timestamps.push(current_timestamp);
 
         std::cout << date_str << " " << time_str << " " << path << " " << timestamps.size() << "\n";
-    }
+    }gi
 
     return 0;
 }
