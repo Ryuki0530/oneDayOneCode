@@ -23,7 +23,7 @@ def find_document_quad(frame :cv2.Mat, min_area_ratio: float = 0.1):
         return None
     
     min_area = (h * w) * min_area_ratio
-    for cnt in sorted(contours, key=cv2.contourArea, reverse=True)[:10]:
+    for cnt in sorted(contours, key=cv2.contourArea, reverse=True)[:100]:
         area = cv2.contourArea(cnt)
         if area < min_area:
             continue
@@ -65,6 +65,28 @@ def parse_args():
     parser.add_argument("cam_id", type=int, nargs="?", default=0, help="Camera ID to use (default: 0)")
     return parser.parse_args()
 
+def warp_perspective(frame: np.ndarray, corners: np.ndarray, min_size: int = 200) -> np.ndarray:
+
+    tl, tr, br, bl = corners
+
+    widthA = np.linalg.norm(br - bl)
+    widthB = np.linalg.norm(tr - tl)
+    heightA = np.linalg.norm(tr - br)
+    heightB = np.linalg.norm(tl - bl)
+    dstW = int(max(widthA, widthB))
+    dstH = int(max(heightA, heightB))
+    dstW = max(dstW, min_size)
+    dstH = max(dstH, min_size)
+
+    src = np.array([tl, tr, br, bl], dtype=np.float32)
+    dst = np.array([[0, 0],
+                    [dstW - 1, 0],
+                    [dstW - 1, dstH - 1],
+                    [0, dstH - 1]], dtype=np.float32)
+
+    M = cv2.getPerspectiveTransform(src, dst)
+    return cv2.warpPerspective(frame, M, (dstW, dstH))
+
 def main():
     args = parse_args()
 
@@ -92,7 +114,22 @@ def main():
                 has_doc = True
                 last_corners = None
 
-           
+            if has_doc:
+                # 入力側に輪郭オーバレイ
+                ipts = corners.astype(int)
+                cv2.polylines(frame, [ipts], True, (0, 255, 0), 2)
+                for i, p in enumerate(ipts):
+                    cv2.circle(frame, p, 5, (0, 200, 255), -1)
+                    cv2.putText(frame, str(i), p + 5, cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 200, 255), 2)
+
+                # 透視変換して別ウィンドウで表示
+                scanned = warp_perspective(frame, corners)
+                cv2.imshow('Scanned (preview)', scanned)
+            else:
+                # 未検出時は空表示
+                blank = np.zeros((360, 480, 3), dtype=np.uint8)
+                cv2.putText(blank, "No document", (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (180, 180, 180), 2)
+                cv2.imshow('Scanned (preview)', blank)
 
             k = cv2.waitKey(1) & 0xFF
             if k in (27, ord('q')):
