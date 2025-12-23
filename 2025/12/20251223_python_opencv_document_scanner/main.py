@@ -1,6 +1,7 @@
 import cv2
 import argparse
 import numpy as np
+from datetime import datetime
 
 def find_document_quad(frame :cv2.Mat, min_area_ratio: float = 0.1):
     h,w = frame.shape[:2]
@@ -134,7 +135,18 @@ def main():
             k = cv2.waitKey(1) & 0xFF
             if k in (27, ord('q')):
                 break
-    
+            
+            if k == 32:  # SPACE
+                if has_doc and scanned is not None:
+                    ts = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    out_name = f"scan_{ts}.png"  # カレントに保存
+                    ok = cv2.imwrite(out_name, scanned)
+                    if ok:
+                        print(f"[SAVED] {out_name}")
+                    else:
+                        print("[ERROR] 画像の保存に失敗しました。")
+                else:
+                    print("[INFO] 紙を検出している時だけ保存できます。")
     finally:
         cam.release()
         cv2.destroyAllWindows()
