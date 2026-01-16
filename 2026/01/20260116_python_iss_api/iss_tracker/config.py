@@ -16,5 +16,21 @@ class AppConfig:
     # ISS API
     iss_api: str = "https://api.wheretheiss.at/v1/satellites/25544"
 
+    # Web関連パス
+    web_src_dir: Path = Path(__file__).resolve().parents[1] / "web"
+    web_out_dir: Path = Path(__file__).resolve().parents[1] / "iss_web"
+
+    # 出力HTMLファイル名
+    index_name: str = "index.html"
+
     # 更新間隔
-    update_ms: int = 300_000  # 5分
+    update_ms: int = 300_000
+
+
+    @property
+    def index_out_path(self) -> Path:
+        return self.web_out_dir / self.index_name
+
+    @property
+    def url(self) -> str:
+        return f"http://{self.host}:{self.port}/{self.index_name}"
