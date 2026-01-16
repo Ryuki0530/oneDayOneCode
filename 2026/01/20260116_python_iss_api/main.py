@@ -2,6 +2,7 @@
 
 from iss_tracker.config import AppConfig
 from iss_tracker.build import build_web
+from iss_tracker.server import run_server
 
 def main() -> None:
     cfg = AppConfig()
