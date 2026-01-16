@@ -1,5 +1,8 @@
 # main.py
 
+from iss_tracker.config import AppConfig
+
+
 def main() -> None:
     cfg = AppConfig()
 
