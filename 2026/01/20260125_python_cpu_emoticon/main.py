@@ -61,7 +61,7 @@ def main():
             
             emoticon, comment = get_emoticon_and_comment(cpu, mem, disk, net_speed)
             
-            output = f"{now} CPU {cpu:5.1f}%     MEM {mem:5.1f}%     DISK {disk:5.1f}%     NET {format_bytes(net_speed)}/s       {emoticon} {comment}"
+            output = f"{now} CPU {cpu:5.1f}%     MEM {mem:5.1f}%     DISK {disk:5.1f}%     NET {format_bytes(net_speed)}/s       {emoticon} {comment}                   "
             print("\r" + output, end="", flush=True)
     
     except KeyboardInterrupt:
