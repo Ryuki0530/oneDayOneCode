@@ -1,0 +1,11 @@
+import sys
+
+from game.game import Game  
+
+def main():
+    game = Game()
+    game.run()
+    sys.exit(0)
+
+if __name__ == "__main__":
+    main()
