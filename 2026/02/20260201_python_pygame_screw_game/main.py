@@ -1,11 +1,13 @@
 import sys
 
-from game.game import Game  
+from game.game import Game
 
-def main():
+
+def main() -> int:
     game = Game()
     game.run()
-    sys.exit(0)
+    return 0
+
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
