@@ -1,0 +1,1 @@
+/mnt/c/Users/Alise/Desktop/oneDayOneCode/2026/02/20260203_rust_tutrial/log_window_stats/target/debug/log_window_stats: /mnt/c/Users/Alise/Desktop/oneDayOneCode/2026/02/20260203_rust_tutrial/log_window_stats/src/main.rs
