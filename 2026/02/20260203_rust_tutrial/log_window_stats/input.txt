@@ -1,0 +1,7 @@
+6 3
+1 alice
+2 bob
+2 alice
+3 carol
+5 bob
+6 dave
