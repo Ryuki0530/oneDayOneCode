@@ -1,0 +1,26 @@
+[package]
+name = "plugctl"
+version = "0.1.0"
+edition = "2021"
+
+# ==========================================
+# この課題の主役：Cargo.toml 内のアプリ設定
+# ==========================================
+[package.metadata.plugctl]
+default = "hello"
+
+[[package.metadata.plugctl.plugins]]
+name = "hello"
+message = "Hello from Cargo.toml!"
+repeat = 2
+
+[[package.metadata.plugctl.plugins]]
+name = "bye"
+message = "Bye!"
+repeat = 1
+
+[dependencies]
+anyhow = "1"
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+toml = "0.8"
