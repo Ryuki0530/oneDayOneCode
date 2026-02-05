@@ -9,13 +9,13 @@ LinuxがOSとして認識している「ハードウェア情報」を、**で�
 ---
 
 ## 成果物
-プロジェクト名：`hwpeek`
+プロジェクト名：`hwinfo`
 
 実行例：
 ```bash
-./hwpeek --summary
-./hwpeek --cpu
-./hwpeek --block
-./hwpeek --net
-./hwpeek --pci
-./hwpeek --all
+./hwinfo --summary
+./hwinfo --cpu
+./hwinfo --block
+./hwinfo --net
+./hwinfo --pci
+./hwinfo --all
