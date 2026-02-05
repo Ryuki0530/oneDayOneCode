@@ -75,8 +75,15 @@ int main(int argc, char* argv[]) {
         return 1;
     }
     HardwareInfo hwInfo = HardwareInfo();
-    std::string cmd = argv[1];
-    
+    std::string raw_cmd = argv[1];
+    std::string cmd;
+    if (raw_cmd.rfind("--", 0) == 0) {
+        cmd = raw_cmd.substr(2);
+    }else if (raw_cmd.rfind("-", 0) == 0) {
+        cmd = raw_cmd.substr(1);
+    } else {
+        cmd = raw_cmd;
+    }
 
     if (cmd == "cpu") {
         std::cout << hwInfo.showCPUInfo() << std::endl;
@@ -91,7 +98,7 @@ int main(int argc, char* argv[]) {
     } else if (cmd == "all") {
         std::cout << hwInfo.showAllInfo() << std::endl;
     } else {
-        std::cerr << "Unknown command: " << cmd << std::endl;
+        std::cerr << "Unknown option: " << cmd << std::endl;
         return 1;
     }
 
