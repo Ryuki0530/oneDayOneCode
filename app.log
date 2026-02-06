@@ -1,0 +1,10 @@
+2026-02-06 21:21:06,927 - App started
+2026-02-06 21:22:46,880 - App started
+2026-02-06 21:29:43,703 - App started
+2026-02-06 21:31:32,947 - App started
+2026-02-06 21:31:32,949 - Icon image created: size=(64, 64), mode=RGBA
+2026-02-06 21:31:32,949 - Setting up icon with image: <PIL.Image.Image image mode=RGBA size=64x64 at 0x1C838539DF0>
+2026-02-06 21:44:00,265 - State toggled: True
+2026-02-06 21:44:00,265 - Icon image created: size=(64, 64), mode=RGBA
+2026-02-06 21:44:06,223 - Status displayed: ON
+2026-02-06 21:44:10,083 - App exiting
