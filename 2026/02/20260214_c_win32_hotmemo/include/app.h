@@ -15,4 +15,7 @@
 // トレイアイコン識別子
 #define TRAY_ICON_ID 1
 
+// ホットキー
+#define HOTKEY_ID_MAIN 1
+
 #endif // APP_H
