@@ -11,7 +11,18 @@ public class Main {
         
         String line;
         while ((line = br.readLine()) != null) {
-            String[] parts = line.split(" ");
+            line = line.trim();
+
+            if (line.isEmpty()) {
+                continue;
+            }
+
+            String[] parts = line.split("\\s+");
+
+            if (parts.length < 3) {
+                continue;
+            }
+
             String userId = parts[1];
             String action = parts[2];
             
