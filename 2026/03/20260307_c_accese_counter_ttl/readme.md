@@ -65,3 +65,10 @@ ADD 7 bob
 ADD 8 carol
 COUNT 8
 ```
+
+## 出力例
+```text
+2
+2
+3
+```
