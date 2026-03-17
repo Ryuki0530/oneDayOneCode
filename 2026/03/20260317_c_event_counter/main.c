@@ -16,6 +16,10 @@ typedef struct {
     int count;
 } CountEntry;
 
+LastAccepted last_records[MAX_RECORDS];
+CountEntry event_counts[MAX_RECORDS];
+CountEntry user_counts[MAX_RECORDS];
+
 static int find_last_record(LastAccepted records[], int n, const char *user, const char *event) {
     for (int i = 0; i < n; i++) {
         if (strcmp(records[i].user, user) == 0 && strcmp(records[i].event, event) == 0) {
@@ -44,13 +48,9 @@ int main(void) {
     int W;
 
     if (scanf("%d", &W) != 1) {
-        fprintf(stderr, "入力を読めませんでした。標準入力が渡っているか確認してください。\n");
+        fprintf(stderr, "最初の整数Wを読めませんでした。\n");
         return 1;
     }
-
-    LastAccepted last_records[MAX_RECORDS];
-    CountEntry event_counts[MAX_RECORDS];
-    CountEntry user_counts[MAX_RECORDS];
 
     int last_count = 0;
     int event_count_size = 0;
@@ -68,6 +68,7 @@ int main(void) {
         if (idx == -1) {
             accept = 1;
         } else {
+            /* ちょうどW秒差は受理してよい */
             if (t - last_records[idx].last_time >= W) {
                 accept = 1;
             }

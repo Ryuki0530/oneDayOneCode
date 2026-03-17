@@ -1,0 +1,8 @@
+3
+1 alice login
+2 alice login
+3 bob view
+4 alice login
+5 bob view
+8 bob view
+8 alice logout
