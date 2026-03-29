@@ -34,20 +34,22 @@ Recent Unique Messages
 `user count`
 
 ## 入力例
-    8
-    alice hello
-    bob hi
-    alice hello
-    alice hello
-    bob hi
-    bob ok
-    alice bye
-    bob ok
-
+```
+8
+alice hello
+bob hi
+alice hello
+alice hello
+bob hi
+bob ok
+alice bye
+bob ok
+```
 ## 出力例
-    alice 2
-    bob 2
-
+```
+alice 2
+bob 2
+```
 ## 説明
 - `alice hello`（1回目）: 有効
 - `bob hi`（1回目）: 有効
