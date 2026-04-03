@@ -1,0 +1,52 @@
+#main {
+    height: 1fr;
+}
+
+#left-pane,
+#right-pane {
+    width: 1fr;
+    height: 1fr;
+    padding: 1;
+}
+
+#left-pane {
+    border-right: solid $panel;
+}
+
+.pane-title {
+    text-style: bold;
+    margin-bottom: 1;
+}
+
+#branch-list {
+    height: 1fr;
+    border: round $panel;
+}
+
+#detail {
+    height: 1fr;
+    border: round $panel;
+    padding: 1;
+    margin-bottom: 1;
+}
+
+#actions {
+    height: auto;
+}
+
+#actions Button {
+    margin-right: 1;
+}
+
+#hint {
+    padding: 0 1;
+    color: $text-muted;
+}
+
+#status {
+    padding: 0 1;
+}
+
+#status.error {
+    color: $error;
+}
