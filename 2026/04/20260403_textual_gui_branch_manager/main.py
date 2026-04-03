@@ -28,17 +28,25 @@ class GitService:
         self.repo_path = repo_path
 
     def _run(self, *args: str) -> str:
-        result = subprocess.run(
-            ["git", *args],
-            cwd=self.repo_path,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
+        try:
+            result = subprocess.run(
+                ["git", *args],
+                cwd=self.repo_path,
+                capture_output=True,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                check=False,
+            )
+        except FileNotFoundError as exc:
+            raise GitCommandError("git command not found in PATH") from exc
+
+        stdout = result.stdout or ""
+        stderr = result.stderr or ""
         if result.returncode != 0:
-            message = result.stderr.strip() or result.stdout.strip() or "Unknown git error"
+            message = stderr.strip() or stdout.strip() or "Unknown git error"
             raise GitCommandError(message)
-        return result.stdout
+        return stdout
 
     def is_git_repo(self) -> bool:
         try:
