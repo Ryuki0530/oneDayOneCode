@@ -1,0 +1,6 @@
+alice,200
+bob,404
+alice,200
+charlie,500
+bob,200
+alice,404
