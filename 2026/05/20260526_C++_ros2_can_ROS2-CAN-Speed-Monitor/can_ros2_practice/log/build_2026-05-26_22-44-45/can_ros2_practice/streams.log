@@ -1,0 +1,64 @@
+[0.004s] Invoking command in '/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/als0079/Desktop/oneDayOneCode/can_ros2_practice -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice
+[0.034s] -- The C compiler identification is GNU 13.3.0
+[0.062s] -- The CXX compiler identification is GNU 13.3.0
+[0.071s] -- Detecting C compiler ABI info
+[0.117s] -- Detecting C compiler ABI info - done
+[0.121s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.121s] -- Detecting C compile features
+[0.122s] -- Detecting C compile features - done
+[0.128s] -- Detecting CXX compiler ABI info
+[0.184s] -- Detecting CXX compiler ABI info - done
+[0.188s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.189s] -- Detecting CXX compile features
+[0.189s] -- Detecting CXX compile features - done
+[0.190s] -- Found ament_cmake: 2.5.6 (/opt/ros/jazzy/share/ament_cmake/cmake)
+[0.267s] -- Found Python3: /usr/bin/python3 (found version "3.12.3") found components: Interpreter 
+[0.309s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.322s] -- Found rclcpp: 28.1.18 (/opt/ros/jazzy/share/rclcpp/cmake)
+[0.340s] -- Found rosidl_generator_c: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_c/cmake)
+[0.346s] -- Found rosidl_generator_cpp: 4.6.7 (/opt/ros/jazzy/share/rosidl_generator_cpp/cmake)
+[0.353s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.361s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.398s] -- Found rmw_implementation_cmake: 7.3.3 (/opt/ros/jazzy/share/rmw_implementation_cmake/cmake)
+[0.399s] -- Found rmw_fastrtps_cpp: 8.4.3 (/opt/ros/jazzy/share/rmw_fastrtps_cpp/cmake)
+[0.444s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.13")  
+[0.454s] -- Found FastRTPS: /opt/ros/jazzy/include (Required is at least version "2.13") 
+[0.466s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.503s] -- Found can_msgs: 2.0.0 (/opt/ros/jazzy/share/can_msgs/cmake)
+[0.521s] -- Found ament_lint_auto: 0.17.5 (/opt/ros/jazzy/share/ament_lint_auto/cmake)
+[0.594s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[0.594s] -- Configured cppcheck include dirs: 
+[0.594s] -- Configured cppcheck exclude dirs and/or files: 
+[0.595s] -- Added test 'lint_cmake' to check CMake code style
+[0.597s] -- Added test 'uncrustify' to check C / C++ code style
+[0.597s] -- Configured uncrustify additional arguments: 
+[0.598s] -- Added test 'xmllint' to check XML markup files
+[0.599s] -- Configuring done (0.6s)
+[0.604s] -- Generating done (0.0s)
+[0.606s] -- Build files have been written to: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice
+[0.611s] Invoked command in '/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake /home/als0079/Desktop/oneDayOneCode/can_ros2_practice -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice
+[0.612s] Invoking command in '/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice -- -j24 -l24
+[0.642s] [ 50%] [32mBuilding CXX object CMakeFiles/speed_monitor_node.dir/src/speed_monitor_node.cpp.o[0m
+[4.233s] [100%] [32m[1mLinking CXX executable speed_monitor_node[0m
+[4.370s] [100%] Built target speed_monitor_node
+[4.377s] Invoked command in '/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --build /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice -- -j24 -l24
+[4.382s] Invoking command in '/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice
+[4.386s] -- Install configuration: ""
+[4.386s] -- Execute custom install script
+[4.387s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/lib/can_ros2_practice/speed_monitor_node
+[4.390s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/ament_index/resource_index/package_run_dependencies/can_ros2_practice
+[4.396s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/ament_index/resource_index/parent_prefix_path/can_ros2_practice
+[4.401s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/environment/ament_prefix_path.sh
+[4.405s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/environment/ament_prefix_path.dsv
+[4.408s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/environment/path.sh
+[4.412s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/environment/path.dsv
+[4.417s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/local_setup.bash
+[4.421s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/local_setup.sh
+[4.426s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/local_setup.zsh
+[4.430s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/local_setup.dsv
+[4.434s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/package.dsv
+[4.438s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/ament_index/resource_index/packages/can_ros2_practice
+[4.443s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/cmake/can_ros2_practiceConfig.cmake
+[4.447s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/cmake/can_ros2_practiceConfig-version.cmake
+[4.452s] -- Symlinking: /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/install/can_ros2_practice/share/can_ros2_practice/package.xml
+[4.458s] Invoked command in '/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice' returned '0': CMAKE_PREFIX_PATH=${CMAKE_PREFIX_PATH}:/opt/ros/jazzy DEBUGINFOD_URLS=https://debuginfod.ubuntu.com /usr/bin/cmake --install /home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice
