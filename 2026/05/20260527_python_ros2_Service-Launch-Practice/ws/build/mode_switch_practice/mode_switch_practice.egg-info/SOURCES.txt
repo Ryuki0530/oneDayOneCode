@@ -1,0 +1,11 @@
+package.xml
+setup.cfg
+setup.py
+mode_switch_practice/__init__.py
+mode_switch_practice.egg-info/PKG-INFO
+mode_switch_practice.egg-info/SOURCES.txt
+mode_switch_practice.egg-info/dependency_links.txt
+mode_switch_practice.egg-info/requires.txt
+mode_switch_practice.egg-info/top_level.txt
+mode_switch_practice.egg-info/zip-safe
+resource/mode_switch_practice

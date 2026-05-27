@@ -1,0 +1,6 @@
+source;share/mode_switch_practice/hook/pythonpath.ps1
+source;share/mode_switch_practice/hook/pythonpath.dsv
+source;share/mode_switch_practice/hook/pythonpath.sh
+source;../../build/mode_switch_practice/share/mode_switch_practice/hook/pythonpath_develop.ps1
+source;../../build/mode_switch_practice/share/mode_switch_practice/hook/pythonpath_develop.dsv
+source;../../build/mode_switch_practice/share/mode_switch_practice/hook/pythonpath_develop.sh
