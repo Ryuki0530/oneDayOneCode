@@ -1,0 +1,22 @@
+[0.345s] Invoking command in '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice/build --no-deps symlink_data
+[0.481s] running develop
+[0.558s] running egg_info
+[0.558s] creating mode_switch_practice.egg-info
+[0.565s] writing mode_switch_practice.egg-info/PKG-INFO
+[0.566s] writing dependency_links to mode_switch_practice.egg-info/dependency_links.txt
+[0.566s] writing requirements to mode_switch_practice.egg-info/requires.txt
+[0.566s] writing top-level names to mode_switch_practice.egg-info/top_level.txt
+[0.566s] writing manifest file 'mode_switch_practice.egg-info/SOURCES.txt'
+[0.573s] reading manifest file 'mode_switch_practice.egg-info/SOURCES.txt'
+[0.573s] writing manifest file 'mode_switch_practice.egg-info/SOURCES.txt'
+[0.582s] running build_ext
+[0.589s] Creating /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/lib/python3.12/site-packages/mode-switch-practice.egg-link (link to .)
+[0.589s] 
+[0.589s] Installed /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice
+[0.589s] running symlink_data
+[0.589s] creating /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/ament_index
+[0.590s] creating /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/ament_index/resource_index
+[0.590s] creating /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/ament_index/resource_index/packages
+[0.590s] symbolically linking /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice/resource/mode_switch_practice -> /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/ament_index/resource_index/packages
+[0.590s] symbolically linking /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice/package.xml -> /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/mode_switch_practice
+[0.604s] Invoked command in '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice' returned '0': DEBUGINFOD_URLS=https://debuginfod.ubuntu.com PYTHONPATH=/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/lib/python3.12/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice/build --no-deps symlink_data

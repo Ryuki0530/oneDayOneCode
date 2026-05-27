@@ -1,0 +1,109 @@
+[0.049s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--symlink-install']
+[0.050s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=24, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=None, packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x702336d76810>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x702336d76630>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x702336d76630>>)
+[0.068s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.068s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.068s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.068s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.068s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.068s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.068s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws'
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.068s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.081s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extensions ['ignore', 'ignore_ament_install']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extension 'ignore'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extension 'ignore_ament_install'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extensions ['colcon_pkg']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extension 'colcon_pkg'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extensions ['colcon_meta']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extension 'colcon_meta'
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extensions ['ros']
+[0.082s] Level 1:colcon.colcon_core.package_identification:_identify(src/mode_switch_practice) by extension 'ros'
+[0.084s] DEBUG:colcon.colcon_core.package_identification:Package 'src/mode_switch_practice' with type 'ros.ament_python' and name 'mode_switch_practice'
+[0.084s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.084s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.084s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.084s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.084s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[0.092s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[0.092s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[0.092s] WARNING:colcon.colcon_core.prefix_path.colcon:The path '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/install' in the environment variable COLCON_PREFIX_PATH doesn't exist
+[0.092s] WARNING:colcon.colcon_ros.prefix_path.ament:The path '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice' in the environment variable AMENT_PREFIX_PATH doesn't exist
+[0.093s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 0 installed packages in /home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install
+[0.093s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 294 installed packages in /opt/ros/jazzy
+[0.094s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[0.110s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'cmake_args' from command line to 'None'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'cmake_target' from command line to 'None'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'cmake_clean_cache' from command line to 'False'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'cmake_clean_first' from command line to 'False'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'cmake_force_configure' from command line to 'False'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'ament_cmake_args' from command line to 'None'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'catkin_cmake_args' from command line to 'None'
+[0.111s] Level 5:colcon.colcon_core.verb:set package 'mode_switch_practice' build argument 'catkin_skip_building_tests' from command line to 'False'
+[0.111s] DEBUG:colcon.colcon_core.verb:Building package 'mode_switch_practice' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/build/mode_switch_practice', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice', 'merge_install': False, 'path': '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/src/mode_switch_practice', 'symlink_install': True, 'test_result_base': None}
+[0.111s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[0.111s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[0.111s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/src/mode_switch_practice' with build type 'ament_python'
+[0.111s] Level 1:colcon.colcon_core.shell:create_environment_hook('mode_switch_practice', 'ament_prefix_path')
+[0.112s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[0.112s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/mode_switch_practice/hook/ament_prefix_path.ps1'
+[0.113s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/mode_switch_practice/hook/ament_prefix_path.dsv'
+[0.113s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/mode_switch_practice/share/mode_switch_practice/hook/ament_prefix_path.sh'
+[0.113s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.113s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.209s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/src/mode_switch_practice'
+[0.209s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[0.209s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[0.477s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[0.477s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[0.477s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with 'Provided py_modules 'mode_manager_node.py' does not exist'
+[0.477s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[0.481s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[0.481s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[0.481s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[0.490s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[0.490s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/local_setup.ps1'
+[0.491s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/_local_setup_util_ps1.py'
+[0.492s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/setup.ps1'
+[0.492s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/local_setup.sh'
+[0.492s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/_local_setup_util_sh.py'
+[0.493s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/setup.sh'
+[0.493s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/local_setup.bash'
+[0.494s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/setup.bash'
+[0.494s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/local_setup.zsh'
+[0.495s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/als0079/Desktop/oneDayOneCode/2026/05/20260527_python_ros2_Service-Launch-Practice/ws/install/setup.zsh'

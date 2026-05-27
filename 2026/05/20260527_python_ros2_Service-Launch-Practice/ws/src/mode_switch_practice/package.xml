@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
-<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
   <name>mode_switch_practice</name>
   <version>0.0.0</version>
-  <description>TODO: Package description</description>
-  <maintainer email="=">als0079</maintainer>
+  <description>ROS2 Python service and launch practice package</description>
+  <maintainer email="ryukifujita0530@gmail.com">Ruki0530</maintainer>
+
   <license>TODO: License declaration</license>
 
   <depend>rclpy</depend>
