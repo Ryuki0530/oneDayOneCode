@@ -4,11 +4,11 @@
   <name>robot_status_cpp</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="=">als0079</maintainer>
+  <maintainer email="ryukifujita0530@gmail.com">Ryuki0530</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-
+  
   <depend>rclcpp</depend>
   <depend>robot_interfaces</depend>
 

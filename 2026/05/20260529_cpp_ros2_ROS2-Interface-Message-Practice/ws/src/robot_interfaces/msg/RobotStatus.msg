@@ -3,8 +3,8 @@
 
 string robot_name
 int32 battery_percent
-float32  temperature
-bool is_operational
+float32 temperature
+bool is_emergency
 
 int32 NORMAL = 0
 int32 WARNING = 1
