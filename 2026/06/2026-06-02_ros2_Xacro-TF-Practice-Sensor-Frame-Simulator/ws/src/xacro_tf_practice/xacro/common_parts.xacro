@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+
+<!--
+  xacro/common_parts.xacro
+
+  役割:
+  - URDFで何度も使う「箱型リンク」をxacroマクロとして定義する
+  - sensor_robot.xacro から include して使う
+-->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!--
+    box_link:
+    name  : link名
+    x,y,z : 箱のサイズ
+    color : RGBA文字列
+  -->
+  <xacro:macro name="box_link" params="name x y z color">
+    <link name="${name}">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${x} ${y} ${z}"/>
+        </geometry>
+        <material name="${name}_material">
+          <color rgba="${color}"/>
+        </material>
+      </visual>
+
+      <collision>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="${x} ${y} ${z}"/>
+        </geometry>
+      </collision>
+    </link>
+  </xacro:macro>
+
+</robot>
