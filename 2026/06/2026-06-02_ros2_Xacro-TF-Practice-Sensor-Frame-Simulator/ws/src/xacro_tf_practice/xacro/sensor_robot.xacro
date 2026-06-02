@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+
+<!--
+  xacro/sensor_robot.xacro
+
+  役割:
+  - base_link, mast_link, sensor_link を持つ簡単なロボットモデルを定義する
+  - sensor_height 引数で mast_link の高さを変更できるようにする
+-->
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="sensor_robot">
+
+  <!-- 外部から変更できるxacro引数 -->
+  <xacro:arg name="sensor_height" default="0.8"/>
+
+  <!-- xacro引数を計算で使いやすいようにpropertyへ入れる -->
+  <xacro:property name="sensor_height" value="$(arg sensor_height)"/>
+
+  <!-- 定数 -->
+  <xacro:property name="base_x" value="0.4"/>
+  <xacro:property name="base_y" value="0.3"/>
+  <xacro:property name="base_z" value="0.1"/>
+
+  <xacro:property name="mast_x" value="0.06"/>
+  <xacro:property name="mast_y" value="0.06"/>
+
+  <xacro:property name="sensor_x" value="0.2"/>
+  <xacro:property name="sensor_y" value="0.1"/>
+  <xacro:property name="sensor_z" value="0.1"/>
+
+  <!-- 共通部品を読み込む -->
+  <xacro:include filename="$(find xacro_tf_practice)/xacro/common_parts.xacro"/>
+
+  <!-- base_link: 土台 -->
+  <xacro:box_link
+    name="base_link"
+    x="${base_x}"
+    y="${base_y}"
+    z="${base_z}"
+    color="0.2 0.2 0.8 1.0"/>
+
+  <!-- mast_link: 支柱 -->
+  <xacro:box_link
+    name="mast_link"
+    x="${mast_x}"
+    y="${mast_y}"
+    z="${sensor_height}"
+    color="0.2 0.8 0.2 1.0"/>
+
+  <!-- sensor_link: センサー本体 -->
+  <xacro:box_link
+    name="sensor_link"
+    x="${sensor_x}"
+    y="${sensor_y}"
+    z="${sensor_z}"
+    color="0.8 0.2 0.2 1.0"/>
+
+  <!-- base_link の上に mast_link を固定 -->
+  <joint name="base_to_mast_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="mast_link"/>
+    <origin
+      xyz="0 0 ${base_z / 2.0 + sensor_height / 2.0}"
+      rpy="0 0 0"/>
+  </joint>
+
+  <!-- mast_link の上に sensor_link を固定 -->
+  <joint name="mast_to_sensor_joint" type="fixed">
+    <parent link="mast_link"/>
+    <child link="sensor_link"/>
+    <origin
+      xyz="0 0 ${sensor_height / 2.0 + sensor_z / 2.0}"
+      rpy="0 0 0"/>
+  </joint>
+
+</robot>

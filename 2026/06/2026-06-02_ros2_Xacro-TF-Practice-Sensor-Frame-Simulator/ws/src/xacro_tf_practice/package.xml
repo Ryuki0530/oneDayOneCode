@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>xacro_tf_practice</name>
+  <version>0.0.0</version>
+  <description>Practice package for xacro, robot_state_publisher, and tf2.</description>
+
+  <maintainer email="als0079@example.com">als0079</maintainer>
+  <license>Apache-2.0</license>
+
+  <!-- 変更点:
+       CMakeベースのROS 2パッケージとしてビルドする -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <!-- 変更点:
+       C++ノードで使う依存関係 -->
+  <depend>rclcpp</depend>
+  <depend>geometry_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+
+  <!-- 変更点:
+       実行時にlaunch, xacro, robot_state_publisherを使う -->
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>xacro</exec_depend>
+  <exec_depend>robot_state_publisher</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
