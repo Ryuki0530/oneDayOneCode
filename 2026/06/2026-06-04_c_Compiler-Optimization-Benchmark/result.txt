@@ -1,0 +1,26 @@
+環境
+Dynabook GCX83
+Windows11
+CPU:Intel Core i7 1195G7 @ 2.90HHz
+RAM:DDR4 16GB 3200Mhz
+
+結果
+<main_O0>
+checksum: 429436488650984200
+elapsed : 1.334 sec
+
+<main_O2>
+checksum: 429436488650984200
+elapsed : 0.182 sec
+
+<mainO3>
+checksum: 429436488650984200
+elapsed : 0.065 sec
+
+<mainOg>
+checksum: 429436488650984200
+elapsed : 0.355 sec
+
+結論
+o2の時点で7倍、o3となると20倍めっちゃ変わる！
+最適化大事。
