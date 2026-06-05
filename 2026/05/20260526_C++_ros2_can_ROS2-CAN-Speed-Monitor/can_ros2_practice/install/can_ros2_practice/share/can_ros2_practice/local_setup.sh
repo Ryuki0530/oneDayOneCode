@@ -1,1 +1,0 @@
-/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice/ament_cmake_environment_hooks/local_setup.sh

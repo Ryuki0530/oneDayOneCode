@@ -1,1 +1,0 @@
-ament_cmake_symlink_install_targets("TARGET_FILES" "/home/als0079/Desktop/oneDayOneCode/can_ros2_practice/build/can_ros2_practice/speed_monitor_node" "TARGETS" "speed_monitor_node" "DESTINATION" "lib/can_ros2_practice")
