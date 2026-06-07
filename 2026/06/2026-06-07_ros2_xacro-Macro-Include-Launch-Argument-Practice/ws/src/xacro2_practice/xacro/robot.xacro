@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+<robot name="xacro2_practice_robot" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!--
+    変更点:
+    - $(dirname)/parts.xacro をやめる
+    - robot.xacro と parts.xacro は同じディレクトリにあるため、
+      parts.xacro を相対パスで直接includeする
+  -->
+  <xacro:include filename="parts.xacro"/>
+
+  <!--
+    変更点:
+    - launch やコマンドラインから変更できる引数 sensor_height を定義する
+    - デフォルト値は 0.2
+  -->
+  <xacro:arg name="sensor_height" default="0.2"/>
+
+  <!-- base_link -->
+  <link name="base_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.4 0.3 0.1"/>
+      </geometry>
+      <material name="base_blue">
+        <color rgba="0.1 0.3 0.8 1.0"/>
+      </material>
+    </visual>
+  </link>
+
+  <!--
+    変更点:
+    - sensor_box マクロを3回呼び出す
+    - z座標には xacro引数 sensor_height を渡す
+  -->
+  <xacro:sensor_box
+    prefix="front_sensor"
+    parent="base_link"
+    x="0.25"
+    y="0.0"
+    z="$(arg sensor_height)"
+  />
+
+  <xacro:sensor_box
+    prefix="left_sensor"
+    parent="base_link"
+    x="0.0"
+    y="0.2"
+    z="$(arg sensor_height)"
+  />
+
+  <xacro:sensor_box
+    prefix="right_sensor"
+    parent="base_link"
+    x="0.0"
+    y="-0.2"
+    z="$(arg sensor_height)"
+  />
+
+</robot>

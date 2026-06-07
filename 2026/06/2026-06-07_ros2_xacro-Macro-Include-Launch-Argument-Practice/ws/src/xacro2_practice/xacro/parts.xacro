@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!--
+    sensor_box マクロ
+
+    変更点:
+    - 同じようなセンサーlink/joint定義を毎回書かずに済むように、
+      xacro:macro で部品化する
+    - prefix によって link名 / joint名 を切り替える
+    - parent, x, y, z を外から指定できる
+  -->
+  <xacro:macro name="sensor_box" params="prefix parent x y z">
+
+    <joint name="${prefix}_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="${prefix}_link"/>
+      <origin xyz="${x} ${y} ${z}" rpy="0 0 0"/>
+    </joint>
+
+    <link name="${prefix}_link">
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0"/>
+        <geometry>
+          <box size="0.15 0.08 0.05"/>
+        </geometry>
+        <material name="${prefix}_gray">
+          <color rgba="0.5 0.5 0.5 1.0"/>
+        </material>
+      </visual>
+    </link>
+
+  </xacro:macro>
+
+</robot>
