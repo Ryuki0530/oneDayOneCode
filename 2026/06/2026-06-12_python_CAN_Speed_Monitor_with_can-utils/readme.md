@@ -1,4 +1,3 @@
-```markdown
 # Python CAN Speed Monitor with can-utils
 
 ## 目的
