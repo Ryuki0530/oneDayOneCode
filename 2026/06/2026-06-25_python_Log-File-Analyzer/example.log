@@ -1,0 +1,8 @@
+INFO System started
+INFO User login
+WARNING Disk usage high
+ERROR Database connection failed
+INFO Retry database
+ERROR Database connection failed
+WARNING Memory usage high
+INFO Shutdown
