@@ -1,0 +1,9 @@
+INFO: System started
+INFO: Camera initialized
+WARNING: Battery low
+ERROR: Failed to open device
+INFO: Retry connection
+ERROR: Timeout
+DEBUG: Packet received
+WARNING: Temperature high
+INFO: Shutdown
