@@ -1,128 +1,162 @@
-# OneDayOneCode（C++）
+```markdown
+# 今日の課題：RAIIで一時ファイルを管理するクラス
 
-## 問題：設定ファイル管理クラス
+## 概要
 
-設定ファイルを読み込んだことを想定したクラスを実装してください。
+LinuxのシステムコールとC++のクラス設計を組み合わせて、  
+**一時ファイルを自動的に削除するクラス**を作成してください。
 
-### 仕様
-
-`Config`クラスを作成する。
-
-内部では
-
-```cpp
-std::unordered_map<std::string, std::string>
-```
-
-で値を保持する。
+今回はWSL上でC++を使用します。
 
 ---
 
-### 実装する関数
+## 要件
 
-#### 1.
+`TemporaryFile` クラスを実装してください。
+
+### コンストラクタ
 
 ```cpp
-void set(const std::string& key, const std::string& value);
+TemporaryFile(const std::string& path);
 ```
 
-設定を追加・更新する。
+以下の処理を行います。
+
+1. `open()` を使ってファイルを作成する
+2. 読み書き可能な状態で開く
+3. 既存ファイルがある場合は内容を空にする
+4. `open()` に失敗した場合は例外を送出する
+
+使用するフラグは以下を参考にしてください。
+
+```cpp
+O_CREAT | O_RDWR | O_TRUNC
+```
 
 ---
 
-#### 2.
+### `writeText`
 
 ```cpp
-std::optional<std::string> get(const std::string& key) const;
+void writeText(const std::string& text);
 ```
 
-キーが存在すれば値を返す。
+`write()` システムコールを使って、ファイルへ文字列を書き込みます。
 
-存在しなければ
-
-```cpp
-std::nullopt
-```
-
-を返す。
+`write()` が途中までしか書き込まない場合も考慮し、  
+文字列全体が書き込まれるまで繰り返してください。
 
 ---
 
-#### 3.
+### `readText`
 
 ```cpp
-template<typename T>
-std::optional<T> getAs(const std::string& key) const;
+std::string readText();
 ```
 
-以下の型だけ対応する。
+以下の処理を行います。
 
-- int
-- double
-- bool
-- std::string
+1. `lseek()` を使って読み取り位置をファイル先頭へ戻す
+2. `read()` を使ってファイル内容を読み取る
+3. 読み取った内容を `std::string` として返す
 
-例
-
-```cpp
-config.set("port", "8080");
-config.set("pi", "3.14");
-config.set("debug", "true");
-```
-
-↓
-
-```cpp
-auto port = config.getAs<int>("port");
-auto pi = config.getAs<double>("pi");
-auto debug = config.getAs<bool>("debug");
-```
-
-変換に失敗したら
-
-```cpp
-std::nullopt
-```
-
-を返すこと。
+バッファサイズは `128` バイト程度で構いません。
 
 ---
 
-### 動作例
+### デストラクタ
+
+```cpp
+~TemporaryFile();
+```
+
+以下の後処理を行います。
+
+1. `close()` でファイルディスクリプタを閉じる
+2. `unlink()` でファイルを削除する
+
+これにより、オブジェクトがスコープを抜けたときに、一時ファイルが自動削除されるようにしてください。
+
+---
+
+## クラスの制約
+
+コピーによって同じファイルディスクリプタが複数のオブジェクトから管理されることを防ぐため、コピーを禁止してください。
+
+```cpp
+TemporaryFile(const TemporaryFile&) = delete;
+TemporaryFile& operator=(const TemporaryFile&) = delete;
+```
+
+余裕があれば、ムーブコンストラクタとムーブ代入演算子を実装してください。
+
+---
+
+## `main` 関数で行うこと
+
+以下の流れを確認してください。
+
+```cpp
+int main() {
+    {
+        TemporaryFile file("/tmp/one_day_one_code.txt");
+
+        file.writeText("Hello system call!\n");
+        file.writeText("Managed by RAII.\n");
+
+        std::cout << file.readText();
+    }
+
+    // この時点でファイルが削除されていることを確認する
+}
+```
+
+`access()` システムコールを使い、スコープ終了後にファイルが存在しないことも確認してください。
+
+期待する出力例：
 
 ```text
-Port : 8080
-Pi   : 3.14
-Debug: true
-
-timeout is not found
+Hello system call!
+Managed by RAII.
+Temporary file was deleted.
 ```
 
 ---
 
-### 制約
-
-- 例外は投げない
-- `std::optional`を活用する
-- 型変換は `std::stoi`、`std::stod` などを利用してよい
-- boolは `"true"` と `"false"` のみ受け付ける
-
----
-
-## 発展課題（余裕があれば）
+## 使用する主なヘッダ
 
 ```cpp
-bool load(const std::string& filename);
+#include <fcntl.h>
+#include <unistd.h>
+
+#include <cerrno>
+#include <cstring>
+#include <iostream>
+#include <stdexcept>
+#include <string>
 ```
 
-を追加し、
+---
 
+## コンパイル・実行
+
+```bash
+g++ -std=c++17 -Wall -Wextra -pedantic main.cpp -o main
+./main
 ```
-port=8080
-host=localhost
-debug=true
+
+---
+
+## 学習ポイント
+
+- `open()`、`read()`、`write()`、`lseek()`、`close()`、`unlink()` の使い方
+- ファイルディスクリプタの管理
+- システムコールが失敗した場合の処理
+- RAIIによるリソース管理
+- コピー禁止による二重解放の防止
+- デストラクタを使った自動後処理
+
+今回の中心は、**ファイルディスクリプタを単なる整数ではなく、クラスが所有するリソースとして扱うこと**です。
+
+`write()` の部分書き込み対応までできれば十分です。
 ```
-
-のようなファイルを読み込めるようにする。
-
-コメント行（#で始まる）は無視してよい。
