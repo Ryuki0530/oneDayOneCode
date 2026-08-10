@@ -31,7 +31,7 @@ int main() {
     };
  
     for (const auto& sample: test_cases) {
-        int value;
+        int value = 0;
         int result = from_chars(sample, value);
         switch (result) {
             case 0:
@@ -47,9 +47,6 @@ int main() {
                 std::cout << "範囲超過: " << value << std::endl;
                 break;
         }
-
-        // 次ループのために value を0にリセット
-        value = 0;
     }
 
     return 0;
