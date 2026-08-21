@@ -1,10 +1,12 @@
-# 今日のC++課題：終了可能なスレッドセーフキュー
+# 今日のC++課題：固定長リングバッファの実装
 
 ## 概要
 
-`std::mutex` と `std::condition_variable` を使用して、複数のスレッドから安全に利用できるキューを実装してください。
+固定された容量を持つリングバッファ（循環バッファ）を、クラステンプレートとして実装してください。
 
-今回は、キューを単にスレッドセーフにするだけでなく、処理の終了を通知する `close()` 機能も実装します。
+リングバッファは末尾まで到達すると、次の格納位置が先頭に戻るデータ構造です。
+
+今回は容量を超えて `push()` した場合、最も古い要素を上書きする仕様にします。
 
 ## 使用する規格
 
@@ -12,79 +14,111 @@ C++17
 
 ## 実装するクラス
 
-次のインターフェースを持つ `BlockingQueue` クラスを実装してください。
-
-    template <typename T>
-    class BlockingQueue {
+    template <typename T, std::size_t Capacity>
+    class RingBuffer {
     public:
-        bool push(T value);
+        void push(T value);
         std::optional<T> pop();
-        void close();
+
+        const T& front() const;
+        const T& back() const;
+
+        bool empty() const;
+        bool full() const;
+        std::size_t size() const;
 
     private:
-        // 必要なメンバ変数を定義する
+        std::array<std::optional<T>, Capacity> data_;
+        std::size_t head_ = 0;
+        std::size_t size_ = 0;
     };
 
 ## 各関数の仕様
 
 ### push(T value)
 
-- キューに値を追加する
-- 追加後、`pop()` で待機しているスレッドを起こす
-- キューが `close()` 済みの場合は追加せず、`false` を返す
-- 追加に成功した場合は `true` を返す
+- 新しい値をリングバッファの末尾に追加する
+- 空きがある場合は通常どおり追加する
+- バッファが満杯の場合は、最も古い要素を上書きする
+- 値の格納にはムーブを利用すること
 
 ### pop()
 
-- キューに要素があれば、先頭要素を取り出して返す
-- キューが空の場合は、要素が追加されるか `close()` されるまで待機する
-- `close()` 済みでも、キューに残っている要素は取り出す
-- `close()` 済みかつキューが空の場合は `std::nullopt` を返す
+- 最も古い要素を取り出して返す
+- 取り出した格納位置を `std::nullopt` に戻す
+- バッファが空の場合は `std::nullopt` を返す
 
-### close()
+### front()
 
-- キューを終了状態にする
-- `pop()` で待機しているすべてのスレッドを起こす
-- 複数回呼び出されても問題なく動作すること
+- 最も古い要素へのconst参照を返す
+- バッファが空の場合は `std::out_of_range` を送出する
+
+### back()
+
+- 最も新しい要素へのconst参照を返す
+- バッファが空の場合は `std::out_of_range` を送出する
+
+### empty()
+
+バッファが空なら `true` を返す。
+
+### full()
+
+バッファが満杯なら `true` を返す。
+
+### size()
+
+現在格納されている要素数を返す。
 
 ## 動作確認
 
-`main()` では以下を行ってください。
+次の処理を `main()` に実装してください。
 
-1. `BlockingQueue<int>` を作成する
-2. コンシューマースレッドを2本起動する
-3. 各コンシューマーは `pop()` を繰り返し、取得した値を表示する
-4. `pop()` が `std::nullopt` を返したらループを終了する
-5. メインスレッドから `1` ～ `10` を `push()` する
-6. すべて追加した後に `close()` を呼び出す
-7. コンシューマースレッドを `join()` する
-8. `close()` 後の `push(100)` が `false` を返すことを確認する
+1. 容量3の `RingBuffer<std::string>` を作成する
+2. `"A"`、`"B"`、`"C"` を追加する
+3. `front()` が `"A"`、`back()` が `"C"` であることを確認する
+4. `"D"` を追加する
+5. 最も古い `"A"` が上書きされたことを確認する
+6. `pop()` を繰り返し、次の順番で表示されることを確認する
+
+    B
+    C
+    D
+
+7. 空になった後の `pop()` が `std::nullopt` を返すことを確認する
+8. 空の状態で `front()` を呼び出し、例外を捕捉する
 
 ## 使用する主なヘッダー
 
-    <condition_variable>
+    <array>
+    <cstddef>
     <iostream>
-    <mutex>
     <optional>
-    <queue>
-    <thread>
+    <stdexcept>
+    <string>
     <utility>
 
 ## 制約
 
-- キュー本体には `std::queue<T>` を使用する
-- ビジーウェイトは禁止
-- `pop()` の待機には `std::condition_variable::wait()` を使用する
-- 共有状態へのアクセスはすべてミューテックスで保護する
-- デッドロックを発生させないこと
+- 動的メモリ確保を直接使用しない
+- `std::vector` や `std::deque` は使用しない
+- 要素の格納には `std::array<std::optional<T>, Capacity>` を使用する
+- インデックスの循環には剰余演算 `%` を使用する
+- `Capacity` が0の場合はコンパイルエラーにする
+
+## ヒント
+
+新しい要素を書き込む位置は、次の式で求められます。
+
+    (head_ + size_) % Capacity
+
+満杯の状態で上書きした場合は、最も古い要素を示す `head_` も次の位置へ進める必要があります。
+
+    head_ = (head_ + 1) % Capacity
+
+`back()` が参照する位置は、単純な `head_ + size_ - 1` では配列の範囲を超える可能性があるため、循環を考慮してください。
 
 ## コンパイル例
 
-    g++ -std=c++17 -Wall -Wextra -pthread main.cpp -o main
+    g++ -std=c++17 -Wall -Wextra -pedantic main.cpp -o main
     ./main
-
-## 考察ポイント
-
-`pop()` の待機条件は、単に「キューが空ではない」だけでは不十分です。
-
-キューが空のまま `close()` された場合にも、待機中のスレッドが処理を終了できる条件を考えてください。
