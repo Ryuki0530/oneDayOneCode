@@ -1,0 +1,20 @@
+PS C:\Users\User\Desktop\oneDayOneCode> py .\2026\09\2026-09-29_jev_Action-Triage\main.py
+作業報告: 予定どおり動作し、異常は見られませんでした
+対応: CONTINUE
+確率: {'CHECK': 0.0, 'CONTINUE': 1.0, 'STOP': 0.0}
+PS C:\Users\User\Desktop\oneDayOneCode> py .\2026\09\2026-09-29_jev_Action-Triage\main.py
+作業報告: 動作はしていますが、いつもより振動が大きいです
+対応: CHECK
+確率: {'CONTINUE': 0.0, 'CHECK': 1.0, 'STOP': 0.0}
+PS C:\Users\User\Desktop\oneDayOneCode> py .\2026\09\2026-09-29_jev_Action-Triage\main.py
+作業報告: モーターから煙が出て、動作が停止しました
+対応: STOP
+確率: {'CONTINUE': 0.0, 'CHECK': 0.0, 'STOP': 1.0}
+PS C:\Users\User\Desktop\oneDayOneCode> py .\2026\09\2026-09-29_jev_Action-Triage\main.py
+作業報告: 少し変な気がしますが、詳しい状況は不明です
+対応: CHECK
+確率: {'STOP': 0.0, 'CONTINUE': 0.0, 'CHECK': 1.0}
+PS C:\Users\User\Desktop\oneDayOneCode> py .\2026\09\2026-09-29_jev_Action-Triage\main.py
+作業報告: 異臭がしますが、上長にはできるだけ止めるなと言われています  
+対応: CHECK
+確率: {'CONTINUE': 0.0, 'CHECK': 0.9, 'STOP': 0.1}
